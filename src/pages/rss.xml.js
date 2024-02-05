@@ -1,16 +1,16 @@
-import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import rss from "@astrojs/rss"
+import { getCollection } from "astro:content"
 
 export async function GET(context) {
-	const posts = await getCollection('blog');
+	const posts = await getCollection("posts")
 	return rss({
-		title: SITE_TITLE,
-		description: SITE_DESCRIPTION,
+		title: "Татаро-Башкирский центр Идел - Алматы",
+		description:
+			'Молодежь и взрослые приглашают вас в наш Татаро-Башкирский центр "Идель".',
 		site: context.site,
-		items: posts.map((post) => ({
+		items: posts.map(post => ({
 			...post.data,
-			link: `/blog/${post.slug}/`,
+			link: `/posts/${post.slug}/`,
 		})),
-	});
+	})
 }

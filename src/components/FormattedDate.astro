@@ -1,0 +1,20 @@
+---
+import { Icon } from 'astro-icon/components'
+
+export interface Props {
+	date: Date
+}
+
+const { date } = Astro.props
+---
+
+<time class="flex gap-1 items-center text-sm" datetime={date.toISOString()}>
+  <Icon name="mdi:calendar-month" />
+	{
+		date.toLocaleDateString("ru-RU", {
+			year: "numeric",
+			month: "short",
+			day: "numeric",
+		})
+	}
+</time>

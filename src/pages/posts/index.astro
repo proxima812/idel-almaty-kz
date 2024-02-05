@@ -1,0 +1,39 @@
+---
+import Card from "@/components/Card.astro"
+import MainLayout from "@/layouts/MainLayout.astro"
+import { getCollection } from "astro:content"
+
+const posts = (await getCollection("posts"))
+	.filter(post => !post.data.draft)
+	.sort((a, b) => +new Date(b.data.pubDate) - +new Date(a.data.pubDate))
+
+const postsLength = posts.length
+
+const sortedPosts = posts.sort((a, b) => {
+	const yearA = new Date(a.data.pubDate).getFullYear()
+	const yearB = new Date(b.data.pubDate).getFullYear()
+	return yearB - yearA
+})
+
+// Создадим список уникальных годов.
+const uniqueYears = [
+	...new Set(sortedPosts.map(item => new Date(item.data.pubDate).getFullYear())),
+]
+---
+
+<MainLayout title="" description="">
+	{
+		uniqueYears.map(year => (
+			<div class="flex flex-col gap-5">
+				<h3 class="text-3xl font-bold">{year}</h3>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+					{sortedPosts
+						.filter(item => new Date(item.data.pubDate).getFullYear() === year)
+						.map(item => (
+							<Card data={item.data} slug={item.slug} />
+						))}
+				</div>
+			</div>
+		))
+	}
+</MainLayout>

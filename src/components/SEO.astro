@@ -1,0 +1,80 @@
+---
+interface Props {
+	name?: string
+	title: string
+	type?: string
+	description: string
+	heroImage?: any
+	locale?: string
+	tags?: string
+	canonicalURL?: string
+	index?: any
+}
+const {
+	index,
+	name,
+	title,
+	type,
+	description,
+	heroImage,
+	locale = "ru",
+	tags,
+	canonicalURL = new URL(Astro.url.pathname, Astro.site),
+} = Astro.props
+
+function formatCanonicalURL(url: string | URL) {
+	const path = url.toString()
+	const hasQueryParams = path.includes("?")
+	// If there are query params, make sure the URL has no trailing slash
+	if (hasQueryParams) {
+		path.replace(/\/?$/, "")
+	}
+	// otherwise, canonical URL always has a trailing slash
+	return path.replace(/\/?$/, hasQueryParams ? "" : "/")
+}
+
+const defaultOgImage = `${Astro.site}defaultOgImage.png`
+const socialImageURL = new URL(heroImage ? heroImage : defaultOgImage, Astro.url).href
+
+function normalizeImageUrl(image: string) {
+	return typeof image === "string" ? image : image
+}
+---
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<title>{title}</title>
+	<meta name="generator" content={Astro.generator} />
+	<link rel="sitemap" href="/sitemap-index.xml" />
+	{
+		index ? (
+			<meta name="robots" content="noindex, nofollow" />
+		) : (
+			<meta name="robots" content="index, follow" />
+		)
+	}
+	<link rel="mask-icon" href="/favicon.svg" />
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+	<link rel="alternate" type="application/rss+xml" href="/rss.xml" title="RSS" />
+	{canonicalURL && <link rel="canonical" href={formatCanonicalURL(canonicalURL)} />}
+	<meta name="description" content={description} />
+	<meta property="og:title" content={title} />
+	<meta property="og:type" content={type ? "article" : "website"} />
+	{canonicalURL && <meta property="og:url" content={formatCanonicalURL(canonicalURL)} />}
+	<meta property="og:locale" content={locale} />
+	<meta property="og:description" content={description} />
+	<meta property="og:site_name" content={name} />
+	{
+		tags && tags.length > 0 && (
+			// @ts-ignore
+			<meta name="keywords" content={tags.join(", ")} />
+		)
+	}
+	<meta property="og:image" content={normalizeImageUrl(socialImageURL)} />
+
+	<!-- <script is:inline src="/registerSW.js"></script>
+	<link rel="manifest" href="/manifest.webmanifest" /> -->
+</head>

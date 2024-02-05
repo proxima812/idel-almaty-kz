@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from "astro/types"
+interface Props extends HTMLAttributes<"a"> {
+	link: string
+}
+
+import { Icon } from "astro-icon/components"
+const { link, icon, class: className, ...props } = Astro.props
+
+const { pathname } = Astro.url
+const isActive = link === pathname || link === pathname.replace(/\/$/, "")
+---
+
+<a
+	class={`${
+		isActive ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "bg-zinc-50"
+	} hover:bg-zinc-100 font-medium transition-colors ease-linear text-zinc-700 px-5 py-2 rounded-xl flex items-center gap-1 ${className}`}
+	href={link}
+	{...props}
+>
+	{icon && <Icon name={icon} />}
+	<slot />
+</a>

@@ -1,0 +1,25 @@
+---
+import { phones } from "@/data/links"
+import Page from "@/layouts/Page.astro"
+import { Icon } from "astro-icon/components"
+---
+
+<Page title="" description="">
+	<div class="flex flex-col gap-3">
+		{
+			phones &&
+				phones.map(item => (
+					<div class="flex items-center flex-wrap gap-2">
+						<a href={item.link}>{item.nameLink}</a>
+						{item.name && (
+							<span class="flex gap-1 items-center">
+								<Icon name="mdi:account" />
+								{item.name}
+							</span>
+						)}
+						{item.description && <p class="not-prose">({item.description})</p>}
+					</div>
+				))
+		}
+	</div>
+</Page>

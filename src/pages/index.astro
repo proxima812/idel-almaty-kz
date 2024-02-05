@@ -1,0 +1,49 @@
+---
+import About from "@/components/About.astro"
+import Card from "@/components/Card.astro"
+import Gis from "@/components/Icons/Gis.astro"
+import Inst from "@/components/Icons/Inst.astro"
+import MainLayout from "@/layouts/MainLayout.astro"
+import { getCollection } from "astro:content"
+
+const posts = (await getCollection("posts"))
+	.filter(post => !post.data.draft)
+	.sort((a, b) => +new Date(b.data.pubDate) - +new Date(a.data.pubDate))
+---
+
+<MainLayout title="" description="">
+	<div class="flex flex-col justify-between gap-20 items-center">
+		<div class="flex flex-col gap-10 max-w-[880px]">
+			<h1 class="text-4xl md:text-5xl font-bold text-center leading-tight">
+				Татарский-Башкирский центр <span class="font-black">«Идель»</span>
+			</h1>
+			<aside class="text-center flex flex-col gap-3 items-center">
+				<p>Подпишись, чтобы быть в курсе новостей 🔥</p>
+				<div class="flex gap-3 flex-wrap justify-center items-center">
+					<a
+						class="font-medium flex items-center gap-1 px-3 py-2 rounded-xl bg-pink-50 text-pink-700"
+						aria-label="Instagram Идель"
+						href="https://www.instagram.com/idel_almaty_tatarskyi_centre/"
+					>
+						<Inst />
+						<span>@idel_almaty_tatarskyi_centre</span>
+					</a>
+					<a
+						class="font-medium flex items-center gap-1 px-3 py-2 rounded-xl bg-green-50 text-green-700"
+						aria-label="Мы на карте"
+						href="https://go.2gis.com/s6z84"
+					>
+						<Gis />
+						<span>Улица Уалиханова, 63</span>
+					</a>
+				</div>
+			</aside>
+		</div>
+		<section
+			class="snap-x w-full flex overflow-x-scroll lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+		>
+			{posts && posts.slice(0, 3).map(item => <Card data={item.data} slug={item.slug} />)}
+		</section>
+	</div>
+	<About />
+</MainLayout>

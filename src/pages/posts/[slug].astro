@@ -1,0 +1,33 @@
+---
+import Post from "@/layouts/MainLayout.astro"
+import { Image } from "astro:assets"
+import { getCollection } from "astro:content"
+
+export async function getStaticPaths() {
+	const posts = await getCollection("posts")
+	return posts.map(post => ({
+		params: { slug: post.slug },
+		props: post,
+	}))
+}
+
+const post = Astro.props
+const { Content } = await post.render()
+---
+
+<Post {...post.data}>
+	<main
+		class="text-balance prose max-w-3xl mx-auto prose-blue xl:prose-xl lg:prose-lg prose-md"
+	>
+		<Image
+			src={post.data.heroImage}
+			alt={`Изображения поста: ${post.data.title}`}
+			format="avif"
+			class="rounded-2xl"
+			width={1200}
+			height={1200}
+		/>
+		<h1>{post.data.title}</h1>
+		<Content />
+	</main>
+</Post>

@@ -30,7 +30,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }} # Или используйте key: ${{ secrets.SSH_KEY }} для ключа SSH
         script: |
-          cd /path/to/your/project
+          cd /new.idel-almaty.kz
           # Здесь команды для удаления старых файлов, если это необходимо
           # Например, rm -rf * (осторожно с этой командой, убедитесь в корректности пути)
           # Используйте команды для загрузки новых файлов, например, через rsync или scp

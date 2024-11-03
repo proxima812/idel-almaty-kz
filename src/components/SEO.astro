@@ -1,9 +1,10 @@
 ---
+import { SITE_INFO } from "../consts"
 interface Props {
 	name?: string
 	title: string
 	type?: string
-	description: string
+	description?: string
 	heroImage?: any
 	locale?: string
 	tags?: string
@@ -54,19 +55,21 @@ function normalizeImageUrl(image: string) {
 			<meta name="robots" content="index, follow" />
 		)
 	}
+	<!-- yandex-verification -->
+	<meta name="yandex-verification" content="cb5b4620391e8063" />
 	<link rel="mask-icon" href="/favicon.svg" />
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 	<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 	<link rel="alternate" type="application/rss+xml" href="/rss.xml" title="RSS" />
 	{canonicalURL && <link rel="canonical" href={formatCanonicalURL(canonicalURL)} />}
-	<meta name="description" content={description} />
+	<meta name="description" content={description || SITE_INFO.MAIN_DESCRIPTION} />
 	<meta property="og:title" content={title} />
 	<meta property="og:type" content={type ? "article" : "website"} />
 	{canonicalURL && <meta property="og:url" content={formatCanonicalURL(canonicalURL)} />}
 	<meta property="og:locale" content={locale} />
-	<meta property="og:description" content={description} />
-	<meta property="og:site_name" content={name} />
+	<meta property="og:description" content={description || SITE_INFO.MAIN_DESCRIPTION} />
+	<meta property="og:site_name" content={name || SITE_INFO.SITE_NAME} />
 	{
 		tags && tags.length > 0 && (
 			// @ts-ignore
@@ -77,4 +80,42 @@ function normalizeImageUrl(image: string) {
 
 	<!-- <script is:inline src="/registerSW.js"></script>
 	<link rel="manifest" href="/manifest.webmanifest" /> -->
+	<!-- Yandex.Metrika counter -->
+	<script type="text/javascript">
+		;(function (m, e, t, r, i, k, a) {
+			m[i] =
+				m[i] ||
+				function () {
+					;(m[i].a = m[i].a || []).push(arguments)
+				}
+			m[i].l = 1 * new Date()
+			for (var j = 0; j < document.scripts.length; j++) {
+				if (document.scripts[j].src === r) {
+					return
+				}
+			}
+			;(k = e.createElement(t)),
+				(a = e.getElementsByTagName(t)[0]),
+				(k.async = 1),
+				(k.src = r),
+				a.parentNode.insertBefore(k, a)
+		})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym")
+
+		ym(96384730, "init", {
+			clickmap: true,
+			trackLinks: true,
+			accurateTrackBounce: true,
+			webvisor: true,
+		})
+	</script>
+	<noscript
+		><div>
+			<img
+				src="https://mc.yandex.ru/watch/96384730"
+				style="position:absolute; left:-9999px;"
+				alt=""
+			/>
+		</div></noscript
+	>
+	<!-- /Yandex.Metrika counter -->
 </head>

@@ -8,26 +8,38 @@ const { data, slug } = Astro.props
 
 <a
 	href={`/posts/${slug}`}
-	class="shrink-0 snap-center max-w-[310px] md:max-w-full group overflow-hidden rounded-2xl"
+	class="group overflow-hidden rounded-2xl"
+	transition:name={slug}
 >
 	<article class="relative">
-		<Image
-			src={data.heroImage}
-			width={1200}
-			height={1200}
-			alt={`Изображение к посту: ${data.title}`}
-			format="avif"
-			class="group-hover:scale-[1.025] duration-500 transition-transform ease-out object-cover h-[220px] rounded-2xl"
-		/>
+		{
+			data.heroImage ? (
+				<Image
+					src={data.heroImage}
+					srcset={`${data.heroImage.src}?w=320 320w, ${data.heroImage.src}?w=640 640w, ${data.heroImage.src}?w=1280 1280w`}
+					sizes="(max-width: 600px) 320px, (max-width: 1200px) 640px, 1280px"
+					width={data.heroImage.width / 2}
+					alt={`Изображение к посту: ${data.title}`}
+					densities={[1.5, 2]}
+					format="avif"
+					quality="low"
+					loading="eager"
+					class="group-hover:scale-[1.025] duration-500 transition-transform ease-out object-cover bg-gray-100 h-[220px] rounded-2xl"
+				/>
+			) : (
+				<div class="w-full bg-gradient-to-tr from-red-500 via-white to-green-500  h-[220px]" />
+			)
+		}
 		<div
-			class="absolute bottom-0 p-5 w-full bg-gradient-to-tr from-black/50 to-white/10 rounded-2xl text-white backdrop-blur-sm backdrop-brightness-75 flex flex-col gap-2"
+			class="absolute bottom-0 p-5 w-full bg-gradient-to-tr from-black/80 to-emerald-500/50 rounded-2xl text-white backdrop-blur-sm backdrop-brightness-75 flex flex-col gap-2"
 		>
-			<h3 class="font-bold leading-tight text-lg line-clamp-2">{data.title}</h3>
-
+			<h3 class="font-bold leading-tight text-lg line-clamp-2">
+				{data.title}
+			</h3>
 			<FormattedDate date={data.pubDate} />
 			<span
-				class="group-hover:translate-y-0 group-hover:opacity-100 opacity-0 translate-y-10 absolute bottom-5 right-5 ease-in-out transition-all text-sm flex gap-1 items-center"
-				>Далее <Icon name="mdi:arrow-right-bold" /></span
+				class="group-hover:translate-y-0 group-hover:opacity-100 opacity-0 translate-y-10 absolute bottom-5 font-semibold right-5 ease-in-out transition-all text-sm flex gap-1 items-center"
+				>Смотреть <Icon name="mdi:arrow-right-bold" /></span
 			>
 		</div>
 	</article>

@@ -1,11 +1,13 @@
 ---
 import Main from "./MainLayout.astro"
 
-const { title, description } = Astro.props
+const { title, description, index } = Astro.props
 ---
 
-<Main title={title} description={description}>
-	<main class="prose max-w-none prose-blue xl:prose-xl lg:prose-lg prose-md">
-    <slot />
-  </main>
+<Main title={title} description={description} index={index}>
+	<main
+		class="prose prose-img:rounded-lg max-w-3xl mx-auto prose-blue xl:prose-xl prose-lg"
+	>
+		<slot />
+	</main>
 </Main>

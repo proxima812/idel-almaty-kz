@@ -13,8 +13,8 @@ const isActive = link === pathname || link === pathname.replace(/\/$/, "")
 
 <a
 	class={`${
-		isActive ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "bg-zinc-50"
-	} hover:bg-zinc-100 font-medium transition-colors ease-linear text-zinc-700 px-5 py-2 rounded-xl flex items-center gap-1 ${className}`}
+		isActive ? "text-blue-500" : ""
+	}  font-medium transition-colors ease-linear  flex items-center gap-2 ${className}`}
 	href={link}
 	{...props}
 >

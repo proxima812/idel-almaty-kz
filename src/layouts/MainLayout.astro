@@ -10,7 +10,7 @@ interface Props {
 	name?: string
 	title: string
 	type?: any
-	description: string
+	description?: string
 	heroImage?: string
 	locale?: string
 	tags?: any
@@ -45,11 +45,13 @@ const {
 		tags={tags}
 		canonicalURL={canonicalURL}
 	/>
-	<ViewTransitions fallback="swap" />
+	<ViewTransitions />
 	<body class="flex flex-col antialiased min-h-screen">
 		<Header />
-		<main class:list={`${container_max_w ?? "max-w-6xl"} flex-1 container mx-auto px-5`}>
-			<div class="flex flex-col gap-20 py-20">
+		<main
+			class:list={`${container_max_w ?? "max-w-6xl"} flex-1 container mx-auto px-5`}
+		>
+			<div class="flex flex-col md:gap-20 md:py-20 gap-14 py-14">
 				<slot />
 			</div>
 		</main>

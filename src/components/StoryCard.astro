@@ -1,0 +1,25 @@
+---
+import { Image } from "astro:assets"
+
+const { data, slug } = Astro.props
+---
+
+<a href={`/stories/${slug}`}>
+	<article class="rounded-xl bg-zinc-50 border border-zinc-100 p-4">
+		<div class="flex gap-4 items-center">
+			<Image
+				src={data.image}
+				class="rounded-full w-[90px] h-[90px] object-cover"
+				width={300}
+				height={300}
+				format="webp"
+				quality={"low"}
+				alt={data.title}
+			/>
+			<div>
+				<h2 class="text-xl font-bold">{data.title}</h2>
+				<span class="line-clamp-1">{data.old}</span>
+			</div>
+		</div>
+	</article>
+</a>

@@ -9,18 +9,28 @@ export const navLinks = [
 	{
 		nameLink: "О нас",
 		link: "/",
-		icon: "mdi:information",
+		icon: "mdi:notification-clear-all",
 	},
 	{
-		nameLink: "Мероприятия",
+		nameLink: "События",
 		link: "/posts",
 		icon: "mdi:bell-ring",
 	},
 	{
-		nameLink: "Расписание",
-		link: "/events",
-		icon: "mdi:clipboard-text",
+		nameLink: "Личные истории",
+		link: "/stories",
+		icon: "mdi:square-rounded-badge",
 	},
+	{
+		nameLink: "Татарский, ансамбли",
+		link: "/events",
+		icon: "mdi:account-school",
+	},
+	// {
+	// 	nameLink: "Расписание",
+	// 	link: "https://www.instagram.com/idel_almaty_tatarskyi_centre/",
+	// 	icon: "mdi:clipboard-text",
+	// },
 ]
 
 export const phones = [
@@ -33,7 +43,7 @@ export const phones = [
 	{
 		nameLink: "+7 (747) 272 40 34",
 		link: "tel:+77472724034",
-		name: "Виктория",
+		name: "Виктория Фазыловна",
 	},
 
 	{

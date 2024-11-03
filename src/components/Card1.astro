@@ -1,0 +1,47 @@
+---
+import { Image } from "astro:assets"
+import FormattedDate from "./FormattedDate.astro"
+
+const { data, slug } = Astro.props
+---
+
+<a
+	href={`/posts/${slug}`}
+	class="group overflow-hidden rounded-xl"
+	transition:name={slug}
+>
+	<article class="flex flex-col md:flex-row">
+		{
+			data.heroImage ? (
+				<Image
+					src={data.heroImage}
+					srcset={`${data.heroImage.src}?w=320 320w, ${data.heroImage.src}?w=640 640w, ${data.heroImage.src}?w=1280 1280w`}
+					sizes="(max-width: 600px) 320px, (max-width: 1200px) 640px, 1280px"
+					width={data.heroImage.width / 2}
+					alt={`Изображение к посту: ${data.title}`}
+					densities={[1.5, 2]}
+					format="avif"
+					quality="low"
+					loading="eager"
+					class="md:w-1/2 w-full h-[420px] md:h-[320px] rounded-l-xl md:rounded-l-xl object-cover"
+				/>
+			) : (
+				<div class="w-full bg-gradient-to-tr from-red-500 via-white to-green-500  h-[220px]" />
+			)
+		}
+		<div
+			class="md:w-1/2 w-full p-4 flex flex-col bg-gradient-to-bl from-zinc-100 to-white rouneded-b-xl md:rounded-r-xl justify-between"
+		>
+			<div>
+				<h3 class="mb-2 font-bold leading-tight text-2xl line-clamp-3">
+					{data.title}
+				</h3>
+				<FormattedDate date={data.pubDate} />
+			</div>
+			<span
+				class="self-end inline-flex justify-end items-center ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 py-1.5 px-6 animate-buttonheartbeat rounded-md bg-blue-500 hover:bg-blue-400 font-medium text-white"
+				>Читать</span
+			>
+		</div>
+	</article>
+</a>

@@ -17,12 +17,15 @@ const { container_max_w } = Astro.props
 			<Image
 				id="img"
 				src={logo}
+				width={45}
+				height={45}
 				alt="Логотип idel-almaty.kz"
 				title="Логотип"
+				loading="eager"
 				aria-label="Изображение"
 			/>
 		</a>
-		<nav class="hidden lg:flex gap-3 items-center">
+		<nav class="hidden lg:flex gap-6 items-center">
 			{
 				navLinks &&
 					navLinks.map((item: any) => (
@@ -36,7 +39,7 @@ const { container_max_w } = Astro.props
 
 		<span
 			id="openMenu"
-			class="items-center gap-1 bg-red-50 text-red-700 px-3 py-1 rounded-lg lg:hidden flex"
+			class="items-center gap-2 bg-red-100 text-red-600 border border-red-300/60 px-3 py-1.5 rounded-lg lg:hidden flex"
 		>
 			<Icon name="mdi:menu" />
 			Меню
@@ -45,19 +48,23 @@ const { container_max_w } = Astro.props
 			id="menu"
 			class="z-50 hidden absolute bg-zinc-900/90 backdrop-blur-lg h-full w-full top-[85px] left-0"
 		>
-			<nav class="px-5 flex flex-col gap-5">
+			<nav class="px-5 flex flex-col gap-6">
 				{
 					navLinks.map((item: any) => (
 						<Link
 							link={item.link}
-							class="self-center text-center text-xl"
+							class="self-center text-white text-center text-2xl justify-center flex w-full"
 							icon={item.icon}
 						>
 							{item.nameLink}
 						</Link>
 					))
 				}
-				<Link link="/contacts" class="self-center text-center text-xl" icon="mdi:chat">
+				<Link
+					link="/contacts"
+					class="justify-center text-white flex w-full self-center text-center text-xl"
+					icon="mdi:chat"
+				>
 					Контакты
 				</Link>
 			</nav>
@@ -78,6 +85,42 @@ const { container_max_w } = Astro.props
 			img.classList.toggle("hidden")
 			header.classList.toggle("bg-zinc-900/90")
 			body.classList.toggle("overflow-hidden")
+
+			// Toggle the button text and icon
+			if (openMenu.textContent.includes("Меню")) {
+				openMenu.innerHTML = `<svg
+	width="1em"
+	height="1em"
+	viewBox="0 0 24 24"
+	data-icon="mdi:close"
+>
+	<symbol
+		id="ai:mdi:close"
+		><path
+			fill="currentColor"
+			d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"
+		></path></symbol
+	><use
+		xlink:href="#ai:mdi:close"
+    ></use>
+</svg>
+ Закрыть`
+			} else {
+				openMenu.innerHTML = `<svg
+	width="1em"
+	height="1em"
+	viewBox="0 0 24 24"
+	data-icon="mdi:menu"
+>
+	<symbol
+		id="ai:mdi:menu"
+		><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></symbol
+	><use
+		xlink:href="#ai:mdi:menu"
+    ></use>
+</svg>
+ Меню`
+			}
 		})
 	})
 	document.addEventListener("astro:after-swap", nav)

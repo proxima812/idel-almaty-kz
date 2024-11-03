@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	.hover-up {
+		@apply transition-transform ease-out duration-75 translate-y-[-1.25px];
+	}
+
+	@keyframes buttonheartbeat {
+		0% {
+			box-shadow: 0 0 0 0 #3b82f6;
+			transform: scale(1);
+		}
+
+		50% {
+			box-shadow: 0 0 0 7px rgba(59, 130, 246, 0);
+			transform: scale(1.05);
+		}
+
+		to {
+			box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+			transform: scale(1);
+		}
+	}
+
+	.animate-buttonheartbeat {
+		animation: buttonheartbeat 2s ease-in-out infinite;
+	}
+}

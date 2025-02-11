@@ -4,6 +4,7 @@ import Post from "@/layouts/Post.astro"
 import { Image } from "astro:assets"
 import { getCollection } from "astro:content"
 
+
 export async function getStaticPaths() {
 	const posts = await getCollection("posts")
 	return posts.map(post => ({

@@ -1,11 +1,11 @@
 import { collection, config, fields } from "@keystatic/core"
 
 export default config({
-	// storage: { kind: "local" },
-	storage: {
-		kind: "github",
-		repo: "proxima812/idel-almaty-kz",
-	},
+	storage: { kind: "local" },
+	// storage: {
+	// 	kind: "github",
+	// 	repo: "proxima812/idel-almaty-kz",
+	// },
 	collections: {
 		posts: collection({
 			label: "Посты",

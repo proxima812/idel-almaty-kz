@@ -1,0 +1,54 @@
+---
+import BackLink from "@/components/BackLink.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import Layout from "@/layouts/Layout.astro";
+import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+	const posts = await getCollection("posts");
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: post,
+	}));
+}
+const post = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout {...post.data}>
+	<div class="select-none flex flex-col gap-8">
+		<div class="max-w-3xl mx-auto w-full flex justify-between gap-1 flex-wrap items-center">
+			<BackLink href="/posts" />
+			<FormattedDate date={post.data.pubDate} />
+		</div>
+		<main
+			class="text-balance prose-headings:tracking-tight prose-headings:leading-tight prose max-w-3xl prose-p:leading-relaxed mx-auto prose-blue xl:prose-xl lg:prose-lg prose-md"
+		>
+			{
+				post.data.heroImage && (
+					<div class="overflow-hidden">
+						<Image
+							src={post.data.heroImage}
+							alt={`Изображения поста: ${post.data.title}`}
+							format={"avif"}
+							quality={60}
+							class="rounded-2xl h-100 object-cover object-center border-double border-10 border-slate-200 bg-origin-content bg-center bg-contain "
+							width={870}
+							height={870}
+						/>
+					</div>
+				)
+			}
+			<section class="out-size text-center">
+				<h1>{post.data.title}</h1>
+				<p
+					class="bg-slate-100 font-medium text-slate-500 p-5 border-t border-b border-slate-300 -mx-5"
+				>
+					{post.data.description}
+				</p>
+			</section>
+			<Content />
+		</main>
+	</div>
+</Layout>

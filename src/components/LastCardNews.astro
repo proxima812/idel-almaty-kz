@@ -1,0 +1,43 @@
+---
+import { Icon } from "astro-icon/components";
+import FormattedDate from "./FormattedDate.astro";
+import StyleBox from "./partials/StyleBox.astro";
+
+const { data, id } = Astro.props;
+---
+
+<StyleBox variant="gray" innerClass="p-6" outClassFirst="max-w-none">
+	<a href={`/posts/${id}`} title={data.title}>
+		<article class="flex flex-col gap-3 justify-between">
+			<!-- {
+  			data.heroImage ? (
+  				<Image
+  					src={data.heroImage}
+  					srcset={`${data.heroImage.src}?w=320 320w, ${data.heroImage.src}?w=640 640w, ${data.heroImage.src}?w=1280 1280w`}
+  					sizes="(max-width: 600px) 320px, (max-width: 1200px) 640px, 1280px"
+  					width={data.heroImage.width / 2}
+  					alt={`Изображение к посту: ${data.title}`}
+  					densities={[1.5, 2]}
+  					format="avif"
+  					quality="low"
+  					loading="eager"
+  					class="md:w-1/2 w-full h-[420px] md:h-[320px] rounded-l-xl md:rounded-l-xl object-cover"
+  				/>
+  			) : (
+  				<div class="w-full bg-gradient-to-tr from-red-500 via-white to-green-500  h-[220px]" />
+  			)
+  		} -->
+
+			<div>
+				<h3 class="mb-2 h-22.5 font-bold leading-tight text-2xl line-clamp-3">
+					{data.title}
+				</h3>
+				<FormattedDate date={data.pubDate} />
+			</div>
+			<span
+				class="self-end inline-flex items-center gap-1 justify-end ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 py-1.5 px-4 animate-buttonheartbeat rounded-md bg-linear-to-br from-zinc-800 to-black/90 hover:opacity-90 font-medium text-white"
+				><Icon name="mdi:heart" /><span>Смотреть</span></span
+			>
+		</article>
+	</a>
+</StyleBox>

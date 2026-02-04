@@ -1,0 +1,14 @@
+---
+import { Icon } from "astro-icon/components";
+interface Props {
+	href: string;
+}
+const { href } = Astro.props;
+---
+
+<a
+	href={href}
+	title="Назад к предыдущей странице"
+	class="flex gap-1.5 items-center rounded-md max-w-fit px-4 py-1.5 bg-zinc-50 border border-zinc-400/20 shadow-2xs"
+	><Icon name="mdi:arrow-left-thin" /><span class="font-medium">Назад</span></a
+>

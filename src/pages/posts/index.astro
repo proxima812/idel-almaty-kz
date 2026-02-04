@@ -1,41 +1,38 @@
 ---
-import Card from "@/components/Card.astro"
-import InstagramBtn from "@/components/InstagramBtn.astro"
-import MainLayout from "@/layouts/MainLayout.astro"
-import { getCollection } from "astro:content"
+import Card from "@/components/Card.astro";
+import InstagramBtn from "@/components/InstagramBtn.astro";
+import Layout from "@/layouts/Layout.astro";
+import { getCollection } from "astro:content";
 
 const posts = (await getCollection("posts"))
-	.filter(post => !post.data.draft)
-	.sort((a, b) => +new Date(b.data.pubDate) - +new Date(a.data.pubDate))
+	.filter((post) => !post.data.draft)
+	.sort((a, b) => +new Date(b.data.pubDate) - +new Date(a.data.pubDate));
 
-const postsLength = posts.length
+const postsLength = posts.length;
 
 const sortedPosts = posts.sort((a, b) => {
-	const yearA = new Date(a.data.pubDate).getFullYear()
-	const yearB = new Date(b.data.pubDate).getFullYear()
-	return yearB - yearA
-})
+	const yearA = new Date(a.data.pubDate).getFullYear();
+	const yearB = new Date(b.data.pubDate).getFullYear();
+	return yearB - yearA;
+});
 
 // Создадим список уникальных годов.
-const uniqueYears = [
-	...new Set(sortedPosts.map(item => new Date(item.data.pubDate).getFullYear())),
-]
+const uniqueYears = [...new Set(sortedPosts.map((item) => new Date(item.data.pubDate).getFullYear()))];
 ---
 
-<MainLayout title="События за последнее время | Татаро-Башкирский центр Идел">
-	<InstagramBtn />
+<Layout title="События за последнее время | Татаро-Башкирский центр Идел | 2020-2026">
 	{
-		uniqueYears.map(year => (
-			<div class="flex flex-col gap-5">
+		uniqueYears.map((year) => (
+			<div class="select-none flex flex-col gap-5">
 				<h3 class="text-3xl font-bold">{year}</h3>
 				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 					{sortedPosts
-						.filter(item => new Date(item.data.pubDate).getFullYear() === year)
-						.map(item => (
-							<Card data={item.data} slug={item.slug} />
+						.filter((item) => new Date(item.data.pubDate).getFullYear() === year)
+						.map((item) => (
+							<Card data={item.data} id={item.id} />
 						))}
 				</div>
 			</div>
 		))
 	}
-</MainLayout>
+</Layout>

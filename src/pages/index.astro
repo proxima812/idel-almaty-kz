@@ -1,45 +1,53 @@
 ---
-import About from "@/components/About.astro"
-import Card from "@/components/Card.astro"
-import Card1 from '@/components/Card1.astro'
-import Ggis2Btn from "@/components/Ggis2Btn.astro"
-import InstagramBtn from "@/components/InstagramBtn.astro"
-import MainLayout from "@/layouts/MainLayout.astro"
-import { Icon } from "astro-icon/components"
-import { getCollection } from "astro:content"
+import About from "@/components/About.astro";
+import Ggis2Btn from "@/components/Ggis2Btn.astro";
+import MainTitle from "@/components/index/MainTitle.astro";
+import InstagramBtn from "@/components/InstagramBtn.astro";
+import LastCardNews from "@/components/LastCardNews.astro";
+import Layout from "@/layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
+import { getCollection } from "astro:content";
 
 const posts = (await getCollection("posts"))
-	.filter(post => !post.data.draft)
-	.sort((a, b) => +new Date(b.data.pubDate) - +new Date(a.data.pubDate))
+	.filter((post) => !post.data.draft)
+	.sort((a, b) => +new Date(b.data.pubDate) - +new Date(a.data.pubDate));
 ---
 
-<MainLayout title="Татаро-Башкирский центр Идел - Алматы">
-	<div class="flex flex-col justify-between gap-20 items-center">
-		<div class="flex flex-col gap-12 max-w-[880px]">
-			<h1 class="text-4xl md:text-5xl font-bold text-center leading-tight">
-				Татаро-Башкирский центр <span class="font-black">«Идел»</span>
-			</h1>
-			<aside class="text-center flex flex-col gap-3 items-center">
-				<!-- Подпишись, чтобы быть в курсе новостей 🔥 -->
-				<p class="font-medium">Подпишись на обновления 🔥</p>
+<Layout>
+	<MainTitle />
 
-				<div class="flex gap-3 flex-wrap justify-center items-center">
-					<InstagramBtn />
-					<Ggis2Btn />
-				</div>
-			</aside>
+	<!-- Подпишись, чтобы быть в курсе новостей 🔥 -->
+
+	<section class="flex gap-2.5 justify-center flex-wrap">
+		<p class="font-medium w-full text-center">Будь в курсе событий 🔥</p>
+
+		<InstagramBtn href="https://www.instagram.com/idel_almaty_tatarskyi_centre" />
+		<Ggis2Btn />
+	</section>
+
+	<!-- <section class="out-size">
+  </section> -->
+	<section>
+		<span class="flex items-center justify-center gap-1 mb-6 text-zinc-600 font-medium">
+			<Icon name="mdi:playlist-check" />Последние события центра</span
+		>
+
+		{/* Mobile */}
+		<div class="block md:hidden">
+			{
+				posts &&
+					posts.slice(0, 1).map((item) => <LastCardNews data={item.data} id={item.id} />)
+			}
 		</div>
-		<section>
-			<span class="flex items-center gap-1 mb-6 text-zinc-600 font-medium"
-				><Icon name="mdi:playlist-check" />Последние события центра</span
-			>
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-				{
-					posts &&
-						posts.slice(0, 2).map(item => <Card1 data={item.data} slug={item.slug} />)
-				}
-			</div>
-		</section>
-	</div>
+
+		{/* Tablet / Desktop */}
+		<div class="grid-cols-1 md:grid-cols-3 hidden md:grid">
+			{
+				posts &&
+					posts.slice(0, 3).map((item) => <LastCardNews data={item.data} id={item.id} />)
+			}
+		</div>
+	</section>
+
 	<About />
-</MainLayout>
+</Layout>

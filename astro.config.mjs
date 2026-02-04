@@ -1,31 +1,44 @@
-import markdoc from "@astrojs/markdoc"
-import mdx from "@astrojs/mdx"
-import react from "@astrojs/react"
-import sitemap from "@astrojs/sitemap"
-import tailwind from "@astrojs/tailwind"
-import keystatic from "@keystatic/astro"
-import icon from "astro-icon"
-import metaTags from "astro-meta-tags"
-import { defineConfig } from "astro/config"
+import mdx from "@astrojs/mdx";
+import sitemap from "@astrojs/sitemap";
+// import keystatic from "@keystatic/astro";
+import icon from "astro-icon";
+import metaTags from "astro-meta-tags";
+import { defineConfig } from "astro/config";
+import indexNow from "./src/integrations/indexNow";
 
-import netlify from "@astrojs/netlify"
+import react from "@astrojs/react";
+import tailwindcss from "@tailwindcss/vite";
+import { config } from "./src/config.ts";
 
 // https://astro.build/config
 export default defineConfig({
-	site: "https://idel-almaty.kz/",
-	prefetch: true,
+	site: config.site.url,
+
+	prefetch: {
+		defaultStrategy: "viewport",
+		prefetchAll: true,
+	},
+
 	integrations: [
 		mdx(),
-		keystatic(),
+		// keystatic(),
 		sitemap(),
-		tailwind(),
 		icon(),
-		markdoc(),
-		react(),
 		metaTags(),
+		indexNow({
+			key: "id123eanoXJFJQl",
+			collections: ["posts", "stories", "pages"],
+			// 🔥 astro:content
+			sitemapFile: "sitemap.xml",
+			maxUrls: 10000,
+			dryRun: false,
+		}),
+		react(),
 	],
-	output: "hybrid",
-	adapter: netlify({
-		cacheOnDemandPages: true,
-	}),
-})
+
+	output: "static",
+
+	vite: {
+		plugins: [tailwindcss()],
+	},
+});

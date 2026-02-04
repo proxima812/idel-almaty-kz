@@ -1,0 +1,25 @@
+<script is:inline>
+	;(function () {
+		if (typeof window === "undefined") return
+
+		const currentHost = window.location.host
+
+		document.querySelectorAll('a[href^="http://"], a[href^="https://"]').forEach(link => {
+			try {
+				const url = new URL(link.href)
+
+				// если ссылка ведёт на другой хост
+				if (url.host !== currentHost) {
+					const rel = new Set((link.getAttribute("rel") || "").split(" ").filter(Boolean))
+
+					rel.add("noopener")
+					rel.add("noreferrer")
+
+					link.setAttribute("rel", Array.from(rel).join(" "))
+				}
+			} catch {
+				// игнорируем битые URL
+			}
+		})
+	})()
+</script>

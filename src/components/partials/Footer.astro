@@ -1,26 +1,99 @@
 ---
-import { Icon } from "astro-icon/components"
-
-const { container_max_w } = Astro.props
+import BigWordBottom from "@/components/partials/BigWordBottom.astro";
+import { navigation_footer } from "@/data/navigation_footer";
+import { cn } from "@/utils/cn";
+import { Icon } from "astro-icon/components";
+import Container from "./Container.astro";
 ---
 
-<footer class="bg-blue-50 py-6">
-	<div
-		class:list={`${
-			container_max_w ?? "max-w-6xl"
-		} flex justify-center flex-wrap gap-3  md:gap-12 items-center container mx-auto px-5`}
-	>
-		<span class="text-center italic font-medium">
-			(с) 2025 Ассоциация Татарских и Татаро-Башкирских Общественных и Культурных Центров
-			«ИДЕЛ» по г. Алматы.
-		</span>
-		<a
-			href="https://t.me/mirikhan1"
-			class="text-blue-700 ring-1 ring-inset ring-blue-200 bg-blue-100 rounded-xl px-3 py-1.5
-     flex gap-1 items-center"
-		>
-			<Icon name="mdi:account" />
-			Насчет сайта</a
-		>
+<footer>
+	<hr
+		class="h-px w-full border-0 bg-gradient-to-r from-transparent via-gray-200 to-transparent"
+	/>
+
+	<div class="py-8 bg-white">
+		<Container>
+			<div
+				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+					md:gap-8 gap-12 mb-16
+					/* управление колонками */
+					[&>*:nth-child(3n+1)]:lg:justify-self-start
+					[&>*:nth-child(3n+2)]:lg:justify-self-center
+					[&>*:nth-child(3n)]:lg:justify-self-end"
+			>
+				{
+					navigation_footer.map((item, index) => {
+						const columnKey = Object.keys(item).find((key) => key.startsWith("colunm"));
+
+						const baseLinks = Array.isArray(item[columnKey]) ? item[columnKey] : [];
+
+						let links = baseLinks;
+
+						// 1️⃣ Первая колонка — добавляем ссылки
+						if (index === 0) {
+              
+							links = [
+                ...baseLinks,
+                {
+                  href: "/gallery",
+                  label: "Активисты | Галерея",
+                  icon: "mdi:view-grid",
+                },
+								{
+									href: "/contacts",
+									label: "Контакты",
+									icon: "mdi:message-badge",
+								},
+								
+							];
+						}
+
+						// 2️⃣ Вторая колонка — ограничиваем до 6
+						if (index === 1) {
+							links = baseLinks.slice(0, 6);
+						}
+
+						return (
+							<div class="flex flex-col items-center lg:items-start">
+								<span class="mb-6 font-medium text-lg text-zinc-900">{item.category}</span>
+
+								<nav class="flex flex-col gap-4 items-center lg:items-start">
+									{links.map((link) => (
+										<a
+											href={link.href}
+											target={link.target}
+											class={cn(
+												"text-zinc-600 flex items-center gap-1 transition-colors hover:text-blue-900",
+												link.style,
+											)}
+										>
+											{link.icon && <Icon class="shrink-0" name={link.icon} />}
+											<span class="line-clamp-1">{link.label}</span>
+										</a>
+									))}
+								</nav>
+							</div>
+						);
+					})
+				}
+			</div>
+			<hr
+				class="h-px w-full border-0 bg-gradient-to-b from-transparent via-gray-200 to-transparent mb-8"
+			/>
+			<div class="flex flex-wrap items-center justify-center md:justify-between gap-3">
+				<span class="text-zinc-500 text-center">
+					&copy; {new Date().getFullYear()} Ассоциация Татарских и Татаро-Башкирских Общественных
+					и Культурных Центров <b>«ИДЕЛ»</b> по г. Алматы.
+				</span>
+				<a
+					href="https://www.instagram.com/ui.proxima"
+					target="_blank"
+					title="Разработчик сайта"
+					class="flex items-center gap-1 text-fuchsia-400 hover:text-fuchsia-600 duration-150 ease-linear font-medium underline underline-offset-2"
+					><Icon name="mdi:instagram" /><span>ui.proxima</span></a
+				>
+			</div>
+		</Container>
 	</div>
+	<BigWordBottom text="Бәхетле" className="hue" color1="from-zinc-300" color2="to-slate-200" />
 </footer>

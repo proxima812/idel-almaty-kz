@@ -1,0 +1,65 @@
+---
+import Masonry from "@/components/Masonry.astro";
+import Layout from "@/layouts/Layout.astro";
+
+import a1 from "@/assets/activesti/АБУ.jpg";
+import a2 from "@/assets/activesti/Аделия.png";
+import a3 from "@/assets/activesti/Адиля.png";
+import a4 from "@/assets/activesti/Алия.png";
+import a5 from "@/assets/activesti/Амина2.jpeg";
+import a6 from "@/assets/activesti/Асхат.jpg";
+import a7 from "@/assets/activesti/Булат.jpg";
+import a8 from "@/assets/activesti/Василя_2.png";
+import a9 from "@/assets/activesti/Илюза.png";
+import a11 from "@/assets/activesti/Камиль.png";
+import a10 from "@/assets/activesti/Рамис.png";
+import a13 from "@/assets/activesti/Рената.jpeg";
+import a12 from "@/assets/activesti/Шакир.jpeg";
+import { Image } from "astro:assets";
+
+const photos = [
+	{ src: a1, label: "Абу" },
+	{ src: a2, label: "Аделия" },
+	{ src: a3, label: "Адиля" },
+	{ src: a4, label: "Алия" },
+	{ src: a5, label: "Амина" },
+	{ src: a6, label: "Асхат" },
+	{ src: a7, label: "Булат" },
+	{ src: a8, label: "Василя" },
+	{ src: a9, label: "Илюза" },
+	{ src: a10, label: "Рамис" },
+	{ src: a11, label: "Камиль" },
+	{ src: a12, label: "Шакир" },
+	{ src: a13, label: "Рината" },
+];
+---
+
+<Layout title="Активисты | Галерия">
+	<Masonry
+		breakpointCols={{
+			default: 4,
+			1100: 3,
+			700: 2,
+			500: 1,
+		}}
+	>
+		{
+			photos &&
+				photos.map((item) => (
+					<div class="select-none p-5 overflow-hidden relative">
+						<Image
+							format={"avif"}
+							width={1200}
+							height={1200}
+							class="rounded-3xl shadow-md object-cover"
+							src={item.src}
+							alt={item.label}
+						/>
+						<div class="absolute md:text-lg tracking-tight font-bold left-0 top-0 rounded-xl px-3 py-2 bg-black/40 backdrop-blur-xl text-white">
+							{item.label}
+						</div>
+					</div>
+				))
+		}
+	</Masonry>
+</Layout>

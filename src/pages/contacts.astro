@@ -1,0 +1,13 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+import Container from "@/components/partials/Container.astro";
+import { Content } from "@/data/pages/contacts.mdx";
+---
+
+<Layout title="Контакты">
+	<Container>
+		<h1 class=" text-zinc-700 text-4xl font-bold">Контакты</h1>
+		<main class="prose prose-lg max-w-none prose-blue"><Content /></main>
+	</Container>
+</Layout>

@@ -1,24 +1,44 @@
 ---
-import { Image } from "astro:assets"
+import { cn } from "@/utils/cn";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
 
-const { data, slug } = Astro.props
+const { data, id, class: className, index } = Astro.props;
 ---
 
-<a href={`/stories/${slug}`}>
-	<article class="rounded-xl bg-zinc-50 border border-zinc-100 p-4">
+<a href={`/stories/${id}`}>
+	<article
+		class={`${cn("rounded-3xl relative bg-neutral-50 border border-neutral-200 p-4", className)}`}
+	>
+		{
+			index < 3 && (
+				<div class="absolute font-medium text-sm -right-1.5 -top-1.5 ring animate-buttonheartbeat ring-purple-400 px-3 py-1.5 bg-white rounded-lg">
+					новая 🔥
+				</div>
+			)
+		}
 		<div class="flex gap-4 items-center">
-			<Image
-				src={data.image}
-				class="rounded-full w-[90px] h-[90px] object-cover"
-				width={300}
-				height={300}
-				format="webp"
-				quality={"low"}
-				alt={data.title}
-			/>
+			{
+				data.image ? (
+					<Image
+						src={data.image}
+						class="rounded-2xl shrink-0 object-cover object-top w-20 h-20"
+						width={300}
+						height={300}
+						format="avif"
+						quality={"low"}
+						alt={data.title}
+					/>
+				) : (
+					<div class="w-20 h-20 bg-zinc-800 rounded-2xl grid place-items-center">
+						<Icon name="mdi:account" class="text-3xl text-white" />
+					</div>
+				)
+			}
 			<div>
 				<h2 class="text-xl font-bold">{data.title}</h2>
-				<span class="line-clamp-1">{data.old}</span>
+				<span class="text-xs">Добавлено: <b>{data.date}</b> </span>
+				<!-- <span class="line-clamp-1">{data.old}</span> -->
 			</div>
 		</div>
 	</article>

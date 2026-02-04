@@ -1,13 +1,19 @@
 ---
-import Inst from "./Icons/Inst.astro"
+import { cn } from "@/utils/cn";
+import Inst from "./Icons/Inst.astro";
+
+const { class: className = "", href } = Astro.props;
 ---
 
 <a
-	transition:name='inst'
-	class="self-start font-medium flex items-center gap-1 px-3 py-2 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 transition-colors"
+	class={cn(
+		"self-start font-medium flex items-center gap-2 px-3 py-2 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 transition-colors",
+		className,
+	)}
 	aria-label="Instagram Идел"
-	href="https://www.instagram.com/idel_almaty_tatarskyi_centre/"
+	target="_blank"
+	href={href ?? "#"}
 >
 	<Inst />
-	<span>@idel_almaty_tatarskyi_centre</span>
+	<span>{href ? href.replace("https://www.instagram.com/", "@") : "Не указан"}</span>
 </a>

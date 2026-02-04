@@ -1,0 +1,32 @@
+---
+import { cn } from "@/utils/cn";
+import { Icon } from "astro-icon/components";
+
+const { navigation = [], className = "", ...props } = Astro.props;
+
+const { pathname } = Astro.url;
+
+// нормализуем путь: убираем trailing slash
+const normalize = (path = "") => (path === "/" ? "/" : path.replace(/\/$/, ""));
+---
+
+{
+	navigation.map((item) => {
+		const isActive = normalize(item.href) === normalize(pathname);
+
+		return (
+			<a
+				href={item.href}
+				title={item.label}
+				target={item.target}
+				class={cn(className, item.style, isActive && "")}
+				aria-current={isActive ? "page" : undefined}
+				{...props}
+			>
+				{item.icon && <Icon name={item.icon} class={item.icon_style ?? ""} />}
+
+				<span>{item.label}</span>
+			</a>
+		);
+	})
+}

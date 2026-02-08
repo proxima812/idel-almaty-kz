@@ -1,9 +1,9 @@
 ---
-import About from "@/components/About.astro";
 import Ggis2Btn from "@/components/Ggis2Btn.astro";
 import MainTitle from "@/components/index/MainTitle.astro";
 import InstagramBtn from "@/components/InstagramBtn.astro";
 import LastCardNews from "@/components/LastCardNews.astro";
+import StickyList from "@/components/StickyList.astro";
 import Layout from "@/layouts/Layout.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
@@ -49,5 +49,5 @@ const posts = (await getCollection("posts"))
 		</div>
 	</section>
 
-	<About />
+	<StickyList />
 </Layout>

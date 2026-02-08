@@ -2,7 +2,6 @@
 import BackLink from "@/components/BackLink.astro";
 import FormattedDate from "@/components/FormattedDate.astro";
 import Layout from "@/layouts/Layout.astro";
-import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -14,41 +13,50 @@ export async function getStaticPaths() {
 }
 const post = Astro.props;
 const { Content } = await render(post);
+const words = post.body ? post.body.trim().split(/\s+/).length : 0;
+const readTime = Math.max(1, Math.ceil(words / 190));
+const heroBackground = post.data.heroImage?.src
+	? `url("${encodeURI(post.data.heroImage.src)}")`
+	: null;
+const heroStyle = heroBackground
+	? `background-image: linear-gradient(to bottom, rgba(255,255,255,0) 56%, rgba(255,255,255,0.96) 100%), ${heroBackground};`
+	: "background: linear-gradient(180deg, #f1f5f9 0%, transparent);";
 ---
 
 <Layout {...post.data}>
-	<div class="select-none flex flex-col gap-8">
-		<div class="max-w-3xl mx-auto w-full flex justify-between gap-1 flex-wrap items-center">
-			<BackLink href="/posts" />
-			<FormattedDate date={post.data.pubDate} />
-		</div>
-		<main
-			class="text-balance prose-headings:tracking-tight prose-headings:leading-tight prose max-w-3xl prose-p:leading-relaxed mx-auto prose-blue xl:prose-xl lg:prose-lg prose-md"
-		>
-			{
-				post.data.heroImage && (
-					<div class="overflow-hidden">
-						<Image
-							src={post.data.heroImage}
-							alt={`Изображения поста: ${post.data.title}`}
-							format={"avif"}
-							quality={60}
-							class="rounded-2xl h-100 object-cover object-center border-double border-10 border-slate-200 bg-origin-content bg-center bg-contain "
-							width={870}
-							height={870}
-						/>
-					</div>
-				)
-			}
-			<section class="out-size text-center">
-				<h1>{post.data.title}</h1>
-				<p
-					class="bg-slate-100 font-medium text-slate-500 p-5 border-t border-b border-slate-300 -mx-5"
-				>
-					{post.data.description}
-				</p>
-			</section>
-			<Content />
-		</main>
+	<div
+		style={heroStyle}
+		class="absolute object-center object-cover top-21.25 h-[calc((100vh+85px)-50%)] left-0 -z-10 w-full bg-cover bg-center bg-no-repeat"
+	>
+		{
+			heroBackground && (
+				<div class="w-full h-full inset-0 backdrop-blur-3xl bg-black/10 -z-20" />
+			)
+		}
 	</div>
+
+	<main class="max-w-3xl mx-auto flex flex-col gap-16">
+		<div class="flex justify-between gap-3 flex-wrap">
+			<BackLink href="/posts" />
+			<div class={`flex gap-2.5 items-center text-sm ${heroBackground && "*:text-white"} `}>
+				<FormattedDate date={post.data.pubDate} />
+				<span aria-hidden="true">•</span>
+				<span>{readTime} мин чтения</span>
+			</div>
+		</div>
+		<div>
+			<h1
+				class="text-balance text-4xl sm:text-5xl md:text-6xl tracking-[-1.2px] font-bold leading-[1.2] sm:leading-[1.12] md:leading-[1.05]"
+			>
+				{post.data.title}
+			</h1>
+			{post.data.description && <p class="sr-only ">{post.data.description}</p>}
+		</div>
+
+		<article
+			class="prose bg-white shadow rounded-xl p-6 md:p-12 md:-mx-12 ring-1 ring-zinc-900/10 prose-p:text-[20px] prose-p:leading-relaxed prose-headings:text-balance prose-p:text-pretty prose-a:underline prose-a:underline-offset-4 prose-blue max-w-none prose-headings:font-bold"
+		>
+			<Content />
+		</article>
+	</main>
 </Layout>

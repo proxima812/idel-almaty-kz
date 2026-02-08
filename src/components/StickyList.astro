@@ -1,0 +1,90 @@
+---
+const blocks = [
+	{
+		title: "Что такое центр «Идел»",
+		text: "Алматинский филиал РОО «Ассоциация татарских и татаро-башкирских общественных и культурных центров «Идел».",
+		tag: "Основа",
+		index: "01",
+		cardClass: "bg-amber-50 border-amber-400/40",
+		tagClass: "bg-amber-100 text-amber-800 border-amber-300/60",
+		indexClass: "text-amber-500",
+	},
+	{
+		title: "Культурные мероприятия",
+		text: "Сабантуй, тематические фестивали, конкурсы, мастер-классы и открытые встречи для молодежи и взрослых.",
+		tag: "Деятельность",
+		index: "02",
+		cardClass: "bg-rose-50 border-rose-400/40",
+		tagClass: "bg-rose-100 text-rose-800 border-rose-300/60",
+		indexClass: "text-rose-500",
+	},
+	{
+		title: "Представительство и участие",
+		text: "Представляем татар и башкир на городских, республиканских и международных площадках, помогаем в адаптации и сотрудничестве.",
+		tag: "Поддержка",
+		index: "03",
+		cardClass: "bg-sky-50 border-sky-400/40",
+		tagClass: "bg-sky-100 text-sky-800 border-sky-300/60",
+		indexClass: "text-sky-500",
+	},
+	{
+		title: "Главная цель",
+		text: "Создавать сильное сообщество через язык, культуру и традиции семьи, чтобы люди в центре были счастливы и развивались.",
+		tag: "Миссия",
+		index: "04",
+		cardClass: "bg-violet-50 border-violet-400/40",
+		tagClass: "bg-violet-100 text-violet-800 border-violet-300/60",
+		indexClass: "text-violet-500",
+	},
+];
+---
+
+<section class="relative mx-auto grid max-w-5xl gap-5">
+	<div
+		class="rounded-3xl border border-zinc-400/40 bg-zinc-50 p-6 md:p-9 shadow-sm shadow-zinc-300/30"
+	>
+		<p
+			class="mb-3 inline-flex rounded-full border border-zinc-300/70 bg-white px-3 py-1 text-[11px] font-semibold tracking-[0.08em] text-zinc-700 uppercase"
+		>
+			О центре
+		</p>
+		<h2 class="text-balance text-2xl font-bold tracking-tight text-zinc-900 md:text-4xl">
+			Татарский центр «Идел» в Алматы
+		</h2>
+		<p class="mt-3 max-w-3xl text-pretty text-zinc-700 md:text-lg">
+			Центр объединяет татар и башкир, развивает культурные инициативы и поддерживает живую
+			связь поколений.
+		</p>
+		<p class="mt-2 max-w-3xl text-pretty text-zinc-700 md:text-lg">
+			Головной офис Ассоциации находится в г. Астана. Алматинский филиал ведет проекты для
+			молодежи, взрослых и семей.
+		</p>
+	</div>
+
+	<div class="flex flex-col gap-4">
+		{
+			blocks.map((block) => (
+				<article
+					class={`sticky top-20 md:top-24 rounded-3xl border p-6 md:p-9 shadow-md shadow-zinc-300/25 backdrop-blur-sm ${block.cardClass}`}
+				>
+					<div class="mb-4 flex items-center justify-between gap-3">
+						<span
+							class={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold tracking-[0.08em] uppercase ${block.tagClass}`}
+						>
+							{block.tag}
+						</span>
+						<span class={`text-2xl font-black leading-none md:text-4xl ${block.indexClass}`}>
+							{block.index}
+						</span>
+					</div>
+					<h3 class="text-balance text-2xl font-bold leading-tight tracking-tight text-zinc-900 md:text-4xl">
+						{block.title}
+					</h3>
+					<p class="mt-3 max-w-3xl text-pretty text-zinc-700 md:text-xl md:leading-relaxed">
+						{block.text}
+					</p>
+				</article>
+			))
+		}
+	</div>
+</section>

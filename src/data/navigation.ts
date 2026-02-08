@@ -18,7 +18,7 @@ export const navigation: NavItem[] = [
 	},
 	{
 		label: "События",
-		href: "/posts",
+		href: "/posts/",
 		icon_style: "text-green-500",
 		// target: "_blank",
 		icon: "mdi:bell-ring",
@@ -26,14 +26,14 @@ export const navigation: NavItem[] = [
 	},
 	{
 		label: "Истории активистов",
-		href: "/stories",
+		href: "/stories/",
 		icon_style: "",
 		style: "",
 		icon: "mdi:square-rounded-badge",
 	},
 	{
 		label: "Татарский | Ансамбли",
-		href: "/events",
+		href: "/events/",
 		icon_style: "",
 		style: "",
 		icon: "mdi:account-school",

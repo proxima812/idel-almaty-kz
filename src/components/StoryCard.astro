@@ -6,7 +6,7 @@ import { Image } from "astro:assets";
 const { data, id, class: className, index } = Astro.props;
 ---
 
-<a href={`/stories/${id}/`}>
+<a href={`/stories/${id}`}>
 	<article
 		class={`${cn("rounded-3xl relative bg-neutral-50 border border-neutral-200 p-4", className)}`}
 	>

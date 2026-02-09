@@ -1,4 +1,4 @@
-name: Deploy Astro (Bun) to PS.KZ
+name: Deploy Astro (Bun) PS.KZ Cached
 
 on:
   push:
@@ -15,8 +15,27 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
 
+      - name: Cache Bun deps
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lockb') }}
+          restore-keys: |
+            bun-${{ runner.os }}-
+
+      - name: Cache Astro build
+        uses: actions/cache@v4
+        with:
+          path: |
+            .astro
+          key: astro-${{ runner.os }}-${{ hashFiles('src/**/*', 'astro.config.*', 'bun.lockb') }}
+          restore-keys: |
+            astro-${{ runner.os }}-
+
       - name: Install deps
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Build Astro
         run: bun run build

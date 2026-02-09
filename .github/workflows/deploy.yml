@@ -1,4 +1,4 @@
-name: Deploy Astro PS.KZ Optimized
+name: Deploy Astro (Bun) to PS.KZ
 
 on:
   push:
@@ -7,27 +7,26 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: actions/checkout@v4
-      
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      
-      - run: npm ci
-      
-      - run: npm run build
-      
-      - uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install deps
+        run: bun install
+
+      - name: Build Astro
+        run: bun run build
+
+      - name: Deploy FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: dist/
           server-dir: ${{ secrets.FTP_DIR }}
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
+          dangerous-clean-slate: true

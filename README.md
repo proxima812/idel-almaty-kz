@@ -41,4 +41,4 @@ bun run preview
 - `/events` — мероприятия.
 - `/gallery` — галерея.
 
-![Built with Astro](https://img.shields.io/badge/Built%20with-Astro-ff5d01?style=for-the-badge&logo=astro&logoColor=white)
+[![Built with Astro](https://astro.badg.es/v2/built-with-astro/tiny.svg)](https://astro.build)

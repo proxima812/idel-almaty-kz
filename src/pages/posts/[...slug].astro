@@ -1,7 +1,9 @@
 ---
 import BackLink from "@/components/BackLink.astro";
 import FormattedDate from "@/components/FormattedDate.astro";
+import markdownui from "@/components/markdown";
 import Layout from "@/layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -12,18 +14,35 @@ export async function getStaticPaths() {
 	}));
 }
 const post = Astro.props;
+const posts = (await getCollection("posts"))
+	.filter((item) => !item.data.draft)
+	.sort((a, b) => +new Date(b.data.pubDate) - +new Date(a.data.pubDate));
+const postIndex = posts.findIndex((item) => item.id === post.id);
+const previousPost = postIndex >= 0 ? posts[postIndex - 1] : undefined;
+const nextPost = postIndex >= 0 ? posts[postIndex + 1] : undefined;
 const { Content } = await render(post);
 const words = post.body ? post.body.trim().split(/\s+/).length : 0;
 const readTime = Math.max(1, Math.ceil(words / 190));
+const currentUrl = new URL(Astro.url.pathname, Astro.site).href;
+const shareText = post.data.title;
+const encodedShareUrl = encodeURIComponent(currentUrl);
+const encodedShareText = encodeURIComponent(shareText);
+const telegramShareUrl = `https://t.me/share/url?url=${encodedShareUrl}&text=${encodedShareText}`;
+const whatsAppShareUrl = `https://wa.me/?text=${encodedShareText}%20${encodedShareUrl}`;
 const heroBackground = post.data.heroImage?.src
 	? `url("${encodeURI(post.data.heroImage.src)}")`
 	: null;
 const heroStyle = heroBackground
-	? `background-image: linear-gradient(to bottom, rgba(255,255,255,0) 56%, rgba(255,255,255,0.96) 100%), ${heroBackground};`
+	? `background-image: linear-gradient(to bottom, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0.22) 34%, rgba(255,255,255,0.08) 58%, rgba(255,255,255,0.96) 100%), ${heroBackground};`
 	: "background: linear-gradient(180deg, #f1f5f9 0%, transparent);";
 ---
 
-<Layout {...post.data}>
+<Layout
+	{...post.data}
+	type="Article"
+	datePublished={post.data.pubDate.toISOString()}
+	ogImage={post.data.heroImage?.src}
+>
 	<div
 		style={heroStyle}
 		class="absolute object-center object-cover top-21.25 h-[calc((100vh+85px)-50%)] left-0 -z-10 w-full bg-cover bg-center bg-no-repeat"
@@ -46,17 +65,151 @@ const heroStyle = heroBackground
 		</div>
 		<div>
 			<h1
-				class="text-balance text-4xl sm:text-5xl md:text-6xl tracking-[-1.2px] font-bold leading-[1.2] sm:leading-[1.12] md:leading-[1.05]"
+				class:list={[
+					"text-balance text-4xl sm:text-5xl md:text-6xl tracking-[-1.2px] font-bold leading-[1.2] sm:leading-[1.12] md:leading-[1.05]",
+					heroBackground
+						? "text-white/88 drop-shadow-[0_4px_28px_rgba(0,0,0,0.72)]"
+						: "text-zinc-950",
+				]}
 			>
 				{post.data.title}
 			</h1>
-			{post.data.description && <p class="sr-only ">{post.data.description}</p>}
+			{
+				post.data.description && (
+					<p
+						class:list={[
+							"mt-5 max-w-2xl text-pretty text-lg leading-relaxed sm:text-xl",
+							heroBackground
+								? "font-medium text-white/78 drop-shadow-[0_2px_18px_rgba(0,0,0,0.72)]"
+								: "text-zinc-700",
+						]}
+					>
+						{post.data.description}
+					</p>
+				)
+			}
 		</div>
 
 		<article
 			class="prose bg-white shadow rounded-xl p-6 md:p-12 md:-mx-12 ring-1 ring-zinc-900/10 prose-p:text-[20px] prose-p:leading-relaxed prose-headings:text-balance prose-p:text-pretty prose-a:underline prose-a:underline-offset-4 prose-blue max-w-none prose-headings:font-bold"
 		>
-			<Content />
+			<Content components={markdownui} />
 		</article>
+
+		<section
+			aria-labelledby="share-title"
+			class="rounded-2xl bg-sky-50 p-5 ring-1 ring-sky-100 md:-mx-12 md:p-6"
+		>
+			<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<div>
+					<h2 id="share-title" class="text-xl font-bold text-zinc-950">Поделиться</h2>
+					<p class="mt-1 text-sm leading-relaxed text-zinc-600">
+						Отправьте материал друзьям или сохраните ссылку.
+					</p>
+				</div>
+				<div class="flex flex-wrap gap-2">
+					<a
+						href={telegramShareUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-sky-700 shadow-sm ring-1 ring-sky-200 transition hover:bg-sky-100"
+					>
+						<Icon name="mdi:telegram" class="size-4" aria-hidden="true" />
+						Telegram
+					</a>
+					<a
+						href={whatsAppShareUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-sky-700 shadow-sm ring-1 ring-sky-200 transition hover:bg-sky-100"
+					>
+						<Icon name="mdi:whatsapp" class="size-4" aria-hidden="true" />
+						WhatsApp
+					</a>
+					<button
+						type="button"
+						data-share-copy={currentUrl}
+						class="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-sky-700 shadow-sm ring-1 ring-sky-200 transition hover:bg-sky-100"
+					>
+						<Icon name="mdi:link-variant" class="size-4" aria-hidden="true" />
+						<span data-share-copy-label>Ссылка</span>
+					</button>
+				</div>
+			</div>
+		</section>
+
+		<section class="rounded-2xl bg-zinc-950 p-6 text-white md:-mx-12 md:p-8">
+			<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<div>
+					<h2 class="text-2xl font-bold">Следите за событиями центра</h2>
+					<p class="mt-2 max-w-xl text-pretty text-sm leading-relaxed text-zinc-300 sm:text-base">
+						Анонсы мероприятий, фото и видео с встреч публикуем в Instagram центра «Идел».
+					</p>
+				</div>
+				<a
+					href="https://www.instagram.com/idel_almaty_tatarskyi_centre"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-zinc-950 transition hover:bg-sky-100"
+				>
+					<Icon name="mdi:instagram" class="size-5" aria-hidden="true" />
+					Instagram
+				</a>
+			</div>
+		</section>
+
+		{
+			(previousPost || nextPost) && (
+				<nav aria-label="Навигация по постам" class="grid gap-3 md:-mx-12 md:grid-cols-2">
+					{previousPost ? (
+						<a
+							href={`/posts/${previousPost.id}`}
+							class="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-zinc-900/10 transition hover:-translate-y-0.5 hover:shadow-md"
+						>
+							<span class="inline-flex items-center gap-2 text-sm font-semibold text-zinc-500">
+								<Icon name="mdi:arrow-left" class="size-4" aria-hidden="true" />
+								Новее
+							</span>
+							<span class="mt-2 block text-pretty text-lg font-bold text-zinc-950 group-hover:text-sky-700">
+								{previousPost.data.title}
+							</span>
+						</a>
+					) : (
+						<div class="hidden md:block" />
+					)}
+					{nextPost && (
+						<a
+							href={`/posts/${nextPost.id}`}
+							class="group rounded-2xl bg-white p-5 text-left shadow-sm ring-1 ring-zinc-900/10 transition hover:-translate-y-0.5 hover:shadow-md md:text-right"
+						>
+							<span class="inline-flex items-center gap-2 text-sm font-semibold text-zinc-500 md:justify-end">
+								Старее
+								<Icon name="mdi:arrow-right" class="size-4" aria-hidden="true" />
+							</span>
+							<span class="mt-2 block text-pretty text-lg font-bold text-zinc-950 group-hover:text-sky-700">
+								{nextPost.data.title}
+							</span>
+						</a>
+					)}
+				</nav>
+			)
+		}
 	</main>
+
+	<script>
+		document.querySelectorAll<HTMLButtonElement>("[data-share-copy]").forEach((button) => {
+			button.addEventListener("click", async () => {
+				const url = button.dataset.shareCopy;
+				const label = button.querySelector<HTMLElement>("[data-share-copy-label]");
+				if (!url) return;
+				await navigator.clipboard.writeText(url);
+				button.dataset.copied = "true";
+				if (label) label.textContent = "Скопировано";
+				window.setTimeout(() => {
+					button.dataset.copied = "false";
+					if (label) label.textContent = "Ссылка";
+				}, 1600);
+			});
+		});
+	</script>
 </Layout>

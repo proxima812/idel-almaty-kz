@@ -41,7 +41,7 @@ function formatDateToYYYYMMDD(date: Date): string {
 
 const jsonLd = {
 	"@context": "https://schema.org",
-	"@type": type ? "BlogPosting" : "WebPage",
+	"@type": type || "WebPage",
 	headline: mainTitle,
 	description: mainDescription,
 	keywords: keywords || config.site.OG.keywords,
@@ -55,7 +55,7 @@ const jsonLd = {
 	},
 	publisher: {
 		"@type": "Organization",
-		name: config.site.name,
+		name: name || config.site.OG.site_name,
 		logo: {
 			"@type": "ImageObject",
 			url: `${Astro.site}logo.png`,

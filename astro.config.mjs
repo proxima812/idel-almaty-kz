@@ -11,7 +11,6 @@ import { config } from "./src/config.ts";
 // https://astro.build/config
 export default defineConfig({
 	site: config.site.url,
-	trailingSlash: "never",
 	prefetch: {
 		defaultStrategy: "viewport",
 		prefetchAll: true,
@@ -27,14 +26,9 @@ export default defineConfig({
 			enabled: true,
 		}),
 	],
-
 	output: "static",
-
 	vite: {
 		plugins: [tailwindcss()],
-		build: {
-			sourcemap: false,
-			minify: "esbuild",
-		},
+		
 	},
 });

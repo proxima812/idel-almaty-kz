@@ -1,0 +1,41 @@
+---
+type ImageLike = {
+	src?: string;
+	width?: number;
+	height?: number;
+};
+
+type Props = {
+	src?: string | ImageLike;
+	alt?: string;
+	title?: string;
+	width?: number;
+	height?: number;
+	class?: string;
+};
+
+const { src, alt = "", title, width, height, class: className, ...attrs } = Astro.props as Props;
+const image = typeof src === "string" ? { src, width, height } : src;
+const imageSrc = image?.src;
+const imageWidth = width ?? image?.width;
+const imageHeight = height ?? image?.height;
+---
+
+{
+	imageSrc && (
+		<figure class="not-prose my-8 overflow-hidden rounded-2xl bg-zinc-100 shadow-sm ring-1 ring-zinc-900/10">
+			<img
+				src={imageSrc}
+				alt={alt}
+				title={title}
+				width={imageWidth}
+				height={imageHeight}
+				loading="lazy"
+				decoding="async"
+				class:list={["h-auto w-full object-cover", className]}
+				{...attrs}
+			/>
+			{alt && <figcaption class="px-4 py-3 text-sm leading-relaxed text-zinc-500">{alt}</figcaption>}
+		</figure>
+	)
+}

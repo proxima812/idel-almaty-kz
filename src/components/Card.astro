@@ -6,12 +6,6 @@ import FormattedDate from "./FormattedDate.astro";
 const { data, id } = Astro.props;
 ---
 
-<!--
-srcset={`${data.heroImage.src}?w=320 320w, ${data.heroImage.src}?w=640 640w, ${data.heroImage.src}?w=1280 1280w`}
-sizes="(max-width: 600px) 320px, (max-width: 1200px) 640px, 1280px"
-width={data.heroImage.width / 2}
-densities={[1.5, 2]}
--->
 <a href={`/posts/${id}`} class="group overflow-hidden rounded-2xl">
 	<article class="relative">
 		{
@@ -38,7 +32,7 @@ densities={[1.5, 2]}
 			<FormattedDate date={data.pubDate} />
 			<span
 				class="group-hover:translate-y-0 group-hover:opacity-100 opacity-0 translate-y-10 absolute bottom-3 font-semibold duration-300 right-3 ease-in-out transition-all text-sm flex gap-1 items-center"
-				>Смотреть <Icon name="mdi:arrow-right-bold" /></span
+				>Подробнее <Icon name="mdi:star-four-points-outline" /></span
 			>
 		</div>
 	</article>

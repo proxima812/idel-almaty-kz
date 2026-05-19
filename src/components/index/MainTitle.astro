@@ -1,8 +1,26 @@
 ---
+import { getCollection } from "astro:content";
 
+const latestPost = (await getCollection("posts"))
+	.filter((post) => !post.data.draft)
+	.sort((a, b) => +new Date(b.data.pubDate) - +new Date(a.data.pubDate))[0];
 ---
 
-<h1 class="text-center text-4xl md:text-6xl font-extrabold leading-tight">
+{
+	latestPost && (
+		<a
+			href={`/posts/${latestPost.id}`}
+			class="absolute left-1/2 -translate-x-1/2 inline-flex max-w-full items-center rounded-full border border-zinc-200 bg-zinc-50 px-2 py-1.5 text-xs font-medium text-zinc-800 transition hover:border-zinc-300 hover:bg-zinc-100"
+		>
+			<span class="mr-2 shrink-0 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700 ring ring-emerald-500/20">
+				Новое
+			</span>
+			<span class="truncate">{latestPost.data.title}</span>
+		</a>
+	)
+}
+
+<h1 class="text-center mt-10 text-4xl md:text-6xl font-extrabold leading-tight">
 	<span class="relative">
 		<span>Татаро-Башкирский</span>
 	</span>

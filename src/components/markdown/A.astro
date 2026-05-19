@@ -1,0 +1,47 @@
+---
+import { Icon } from "astro-icon/components";
+
+type Props = {
+	href?: string;
+	title?: string;
+	class?: string;
+};
+
+const { href, title, class: className, ...attrs } = Astro.props as Props;
+const isExternal = href ? /^https?:\/\//.test(href) : false;
+const normalizedHref = href?.toLowerCase() ?? "";
+
+const linkType = normalizedHref.includes("instagram.com")
+	? "instagram"
+	: normalizedHref.includes("youtube.com") || normalizedHref.includes("youtu.be")
+		? "youtube"
+		: normalizedHref.includes("2gis.")
+			? "map"
+			: isExternal
+				? "external"
+				: "internal";
+
+const iconNameByType = {
+	instagram: "mdi:instagram",
+	youtube: "mdi:youtube",
+	map: "mdi:map-marker",
+	external: "mdi:open-in-new",
+	internal: "mdi:link-variant",
+};
+---
+
+<a
+	href={href}
+	title={title}
+	target={isExternal ? "_blank" : undefined}
+	rel={isExternal ? "noopener noreferrer" : undefined}
+	class:list={[
+		"inline-flex items-center gap-1.5 rounded-sm font-semibold text-sky-700 underline decoration-sky-400 decoration-2 decoration-dashed underline-offset-4 transition-colors hover:text-sky-900 hover:decoration-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2",
+		className,
+	]}
+	data-link-type={linkType}
+	{...attrs}
+>
+	<Icon name={iconNameByType[linkType]} class="size-4 shrink-0" aria-hidden="true" />
+	<slot />
+</a>

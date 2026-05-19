@@ -12,6 +12,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
 
@@ -21,7 +26,7 @@ jobs:
           path: |
             ~/.bun/install/cache
             node_modules
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lockb') }}
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
           restore-keys: |
             bun-${{ runner.os }}-
 
@@ -30,7 +35,7 @@ jobs:
         with:
           path: |
             .astro
-          key: astro-${{ runner.os }}-${{ hashFiles('src/**/*', 'astro.config.*', 'bun.lockb') }}
+          key: astro-${{ runner.os }}-${{ hashFiles('src/**/*', 'astro.config.*', 'bun.lock') }}
           restore-keys: |
             astro-${{ runner.os }}-
 

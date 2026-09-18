@@ -5,6 +5,8 @@ export type NavItem = {
 	icon?: string;
 	style?: string;
 	icon_style?: string;
+	/** Коллекция, количество записей которой показывается кружком у ссылки. */
+	countFrom?: "posts" | "stories";
 };
 
 export const navigation: NavItem[] = [
@@ -23,6 +25,7 @@ export const navigation: NavItem[] = [
 		// target: "_blank",
 		icon: "mdi:bell-ring",
 		style: "",
+		countFrom: "posts",
 	},
 	{
 		label: "Истории активистов",
@@ -30,6 +33,7 @@ export const navigation: NavItem[] = [
 		icon_style: "",
 		style: "",
 		icon: "mdi:square-rounded-badge",
+		countFrom: "stories",
 	},
 	{
 		label: "Татарский | Ансамбли",

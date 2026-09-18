@@ -8,9 +8,28 @@ export const config = {
 			author: "@ui.proxima",
 			locale: "ru",
 			site_name: 'Татаро-Башкирский культурный центр "Идел"',
-			defaultImage: "default-ogImage.png",
+			defaultImage: "default-ogImage.jpg",
 			keywords:
 				"Татары, Башкиры, культурный центр, Молодежь, взрослые и дети, Татаро-Башкирский культурный центр Идел, Алматы, Казахстан, в центре города, мероприятие молодежи центра, встречи молодежи",
+		},
+		/**
+		 * Данные организации для микроразметки schema.org.
+		 * Из них поисковики собирают карточку центра в выдаче и на картах.
+		 */
+		org: {
+			name: 'Татаро-Башкирский культурный центр "Идел"',
+			alternateName: "Этнокультурный центр «Идел»",
+			description:
+				"Татаро-башкирский общественно-культурный центр в Алматы: мероприятия, уроки татарского языка, ансамбли, молодёжные и женские встречи.",
+			logo: "favicon.svg",
+			street: "улица Уалиханова, 63",
+			city: "Алматы",
+			country: "KZ",
+			latitude: 43.255886,
+			longitude: 76.951173,
+			phones: ["+77774005930", "+77784511208", "+77472724034"],
+			map: "https://go.2gis.com/s6z84",
+			instagram: "https://www.instagram.com/idel_almaty_tatarskyi_centre",
 		},
 		verifications: [
 			{ name_verification: "yandex-verification", content: "582b95d7651bfa08" }, // Подтверждение владения сайтом в Яндекс.Вебмастере

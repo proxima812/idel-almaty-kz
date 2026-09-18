@@ -1,12 +1,9 @@
 ---
-type ImageLike = {
-	src?: string;
-	width?: number;
-	height?: number;
-};
+import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
 
 type Props = {
-	src?: string | ImageLike;
+	src?: string | ImageMetadata;
 	alt?: string;
 	title?: string;
 	width?: number;
@@ -15,10 +12,32 @@ type Props = {
 };
 
 const { src, alt = "", title, width, height, class: className, ...attrs } = Astro.props as Props;
-const image = typeof src === "string" ? { src, width, height } : src;
-const imageSrc = image?.src;
-const imageWidth = width ?? image?.width;
-const imageHeight = height ?? image?.height;
+
+/** Ширина колонки статьи — max-w-3xl (768px), плюс запас под 2x-экраны. */
+const CANDIDATE_WIDTHS = [512, 768, 1024, 1536];
+
+const isLocal = typeof src === "object" && src !== null && "src" in src;
+const local = isLocal ? (src as ImageMetadata) : undefined;
+
+let imageSrc = typeof src === "string" ? src : local?.src;
+let imageWidth = width ?? local?.width;
+let imageHeight = height ?? local?.height;
+let srcset: string | undefined;
+
+if (local) {
+	const widths = CANDIDATE_WIDTHS.filter((w) => w <= local.width);
+	if (widths.length === 0) widths.push(local.width);
+
+	const variants = await Promise.all(
+		widths.map((w) => getImage({ src: local, format: "avif", quality: "mid", width: w })),
+	);
+	const largest = variants[variants.length - 1];
+
+	imageSrc = largest.src;
+	imageWidth = largest.attributes.width ?? widths[widths.length - 1];
+	imageHeight = largest.attributes.height;
+	srcset = variants.map((v, i) => `${v.src} ${widths[i]}w`).join(", ");
+}
 ---
 
 {
@@ -26,6 +45,8 @@ const imageHeight = height ?? image?.height;
 		<figure class="not-prose my-8 overflow-hidden rounded-2xl bg-zinc-100 shadow-sm ring-1 ring-zinc-900/10">
 			<img
 				src={imageSrc}
+				srcset={srcset}
+				sizes={srcset ? "(min-width: 768px) 768px, 100vw" : undefined}
 				alt={alt}
 				title={title}
 				width={imageWidth}

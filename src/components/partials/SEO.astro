@@ -26,11 +26,9 @@ const socialImageURL = new URL(
 	Astro.url,
 ).href
 
-const mainTitle = title ? `${title} • 🍎` : config.site.OG.title
+const mainTitle = title ? `${title} | idel-almaty.kz` : config.site.OG.title
 
-const mainDescription = description
-	? `${description} • 🍎`
-	: config.site.OG.description
+const mainDescription = description || config.site.OG.description
 
 const mainAuthor = author || config.site.OG.author
 const mainOGImage = socialImageURL || config.site.OG.defaultImage
@@ -58,13 +56,44 @@ const jsonLd = {
 		name: name || config.site.OG.site_name,
 		logo: {
 			"@type": "ImageObject",
-			url: `${Astro.site}logo.png`,
+			url: new URL(config.site.org.logo, Astro.site).href,
 		},
 	},
 	...(datePublished && {
 		datePublished: formatDateToYYYYMMDD(new Date(datePublished)),
 		dateModified: formatDateToYYYYMMDD(new Date()),
 	}),
+}
+
+const { org } = config.site
+const isHome = Astro.url.pathname === "/"
+
+const orgJsonLd = {
+	"@context": "https://schema.org",
+	"@type": ["NGO", "LocalBusiness"],
+	"@id": `${Astro.site}#organization`,
+	name: org.name,
+	alternateName: org.alternateName,
+	description: org.description,
+	url: Astro.site,
+	logo: new URL(org.logo, Astro.site).href,
+	image: mainOGImage,
+	telephone: org.phones,
+	address: {
+		"@type": "PostalAddress",
+		streetAddress: org.street,
+		addressLocality: org.city,
+		addressCountry: org.country,
+	},
+	geo: {
+		"@type": "GeoCoordinates",
+		latitude: org.latitude,
+		longitude: org.longitude,
+	},
+	hasMap: org.map,
+	sameAs: [org.instagram, org.map],
+	areaServed: org.city,
+	knowsLanguage: ["tt", "ba", "ru", "kk"],
 }
 ---
 
@@ -120,6 +149,11 @@ const jsonLd = {
 		)
 }
 <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+{
+	isHome && (
+		<script is:inline type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
+	)
+}
 
 <!-- =========================
 	FAVICON / APP ICONS
@@ -147,7 +181,7 @@ const jsonLd = {
 ├─ favicon.ico          → 16x16, 32x32, 48x48 (в одном файле)
 ├─ favicon.svg          → SVG
 ├─ apple-touch-icon.png → 180x180
-└─ default-ogImage.png
+└─ default-ogImage.jpg
 -->
 
 <!--

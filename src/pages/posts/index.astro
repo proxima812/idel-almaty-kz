@@ -25,7 +25,7 @@ const uniqueYears = [...new Set(sortedPosts.map((item) => new Date(item.data.pub
 		uniqueYears.map((year) => (
 			<div class="select-none flex flex-col gap-5">
 				<h3 class="text-3xl font-bold">{year}</h3>
-				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" data-reveal data-reveal-stagger>
 					{sortedPosts
 						.filter((item) => new Date(item.data.pubDate).getFullYear() === year)
 						.map((item) => (

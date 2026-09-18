@@ -41,7 +41,7 @@ const posts = (await getCollection("posts"))
 		</div>
 
 		{/* Tablet / Desktop */}
-		<div class="grid-cols-1 md:grid-cols-3 hidden md:grid">
+		<div class="grid-cols-1 md:grid-cols-3 hidden md:grid gap-3" data-reveal data-reveal-stagger>
 			{
 				posts &&
 					posts.slice(0, 3).map((item) => <LastCardNews data={item.data} id={item.id} />)

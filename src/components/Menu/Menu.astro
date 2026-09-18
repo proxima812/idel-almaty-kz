@@ -3,16 +3,27 @@ import { navigation } from "@/data/navigation";
 import NavList from "./NavList.astro";
 import { Icon } from "astro-icon/components";
 import { cn } from "@/utils/cn";
+import { getCollection } from "astro:content";
 
 interface Props {
 	class?: string;
 }
 
 const { class: className } = Astro.props;
+
+// Счётчики у пунктов меню: черновики в подсчёт не идут.
+const counts = {
+	posts: (await getCollection("posts")).filter((item) => !item.data.draft).length,
+	stories: (await getCollection("stories")).length,
+};
 ---
 
 <nav class={`${cn("hidden md:flex gap-5 items-center", className)}`}>
-	<NavList navigation={navigation} className="text-zinc-700 flex items-center gap-1" />
+	<NavList
+		navigation={navigation}
+		counts={counts}
+		className="text-zinc-700 flex items-center gap-1"
+	/>
 
 	<slot />
 </nav>
@@ -45,7 +56,12 @@ const { class: className } = Astro.props;
 	style="view-transition-name: mobile-menu"
 >
 	<nav class="flex flex-col gap-6 items-start">
-		<NavList navigation={navigation} className="text-white text-2xl flex items-center gap-1" />
+		<NavList
+			navigation={navigation}
+			counts={counts}
+			badgeClass="h-5.5 min-w-5.5 text-[11px] -mt-3.5"
+			className="text-white text-2xl flex items-center gap-1"
+		/>
 		<a href="/contacts" title="Контакты" class="text-white text-2xl flex items-center gap-1">
 			<Icon class="text-violet-500" name="mdi:message-badge" />
 			<span>Контакты</span>

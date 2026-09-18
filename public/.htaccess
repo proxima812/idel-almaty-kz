@@ -1,0 +1,42 @@
+# ---------------------------------------------------------------------
+# idel-almaty.kz — Plesk / Apache за nginx
+# Файл едет в dist/ при каждой сборке (public/ копируется как есть).
+# ---------------------------------------------------------------------
+
+# HTTP -> HTTPS (на случай, если правило Plesk отключат)
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteCond %{HTTPS} !=on
+	RewriteCond %{HTTP:X-Forwarded-Proto} !https
+	RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Apache на этом сервере не знает MIME-тип .avif и отдаёт картинку вообще
+# без Content-Type. Вместе с nosniff это заставляет Safari на iOS предлагать
+# скачать файл вместо показа. В списке «статика через nginx» в Plesk avif
+# тоже нет, поэтому запросы доходят до Apache.
+<IfModule mod_mime.c>
+	AddType image/avif .avif
+	AddType image/avif-sequence .avifs
+	AddType image/webp .webp
+	AddType font/woff2 .woff2
+</IfModule>
+
+<IfModule mod_headers.c>
+	# HTML всегда перепроверяется на сервере: браузер отдаёт If-None-Match,
+	# сервер отвечает 304 — трафика почти нет, но старый дизайн не залипает.
+	<FilesMatch "\.(html|xml|json|txt)$">
+		Header set Cache-Control "no-cache, must-revalidate"
+	</FilesMatch>
+
+	# Картинки, css и js до Apache не доходят: в Plesk включена
+	# «Интеллектуальная обработка статических файлов» и их отдаёт nginx
+	# со своим max-age. Правила для них здесь задавать бесполезно.
+	# Важно: файлы в public/ без хеша в имени (favicon, og-картинка)
+	# кэшируются надолго — при замене меняйте имя файла.
+
+	# HSTS и X-Content-Type-Options уже выставляет сам сервер — не дублируем.
+	Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+ErrorDocument 404 /404.html

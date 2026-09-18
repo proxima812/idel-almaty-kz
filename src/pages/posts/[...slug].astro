@@ -5,6 +5,7 @@ import markdownui from "@/components/markdown";
 import Layout from "@/layouts/Layout.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection, render } from "astro:content";
+import { getImage } from "astro:assets";
 
 export async function getStaticPaths() {
 	const posts = await getCollection("posts");
@@ -29,9 +30,11 @@ const encodedShareUrl = encodeURIComponent(currentUrl);
 const encodedShareText = encodeURIComponent(shareText);
 const telegramShareUrl = `https://t.me/share/url?url=${encodedShareUrl}&text=${encodedShareText}`;
 const whatsAppShareUrl = `https://wa.me/?text=${encodedShareText}%20${encodedShareUrl}`;
-const heroBackground = post.data.heroImage?.src
-	? `url("${encodeURI(post.data.heroImage.src)}")`
+// Фон героя размывается (backdrop-blur-3xl), поэтому хватает лёгкого avif вместо оригинала.
+const heroBlurred = post.data.heroImage
+	? await getImage({ src: post.data.heroImage, format: "avif", quality: "low", width: 960 })
 	: null;
+const heroBackground = heroBlurred ? `url("${encodeURI(heroBlurred.src)}")` : null;
 const heroStyle = heroBackground
 	? `background-image: linear-gradient(to bottom, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0.22) 34%, rgba(255,255,255,0.08) 58%, rgba(255,255,255,0.96) 100%), ${heroBackground};`
 	: "background: linear-gradient(180deg, #f1f5f9 0%, transparent);";
@@ -98,12 +101,12 @@ const heroStyle = heroBackground
 
 		<section
 			aria-labelledby="share-title"
-			class="rounded-2xl bg-sky-50 p-5 ring-1 ring-sky-100 md:-mx-12 md:p-6"
+			class="rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 md:-mx-12 md:p-6"
 		>
 			<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
 					<h2 id="share-title" class="text-xl font-bold text-zinc-950">Поделиться</h2>
-					<p class="mt-1 text-sm leading-relaxed text-zinc-600">
+					<p class="mt-1 text-sm leading-relaxed text-slate-600">
 						Отправьте материал друзьям или сохраните ссылку.
 					</p>
 				</div>
@@ -112,7 +115,7 @@ const heroStyle = heroBackground
 						href={telegramShareUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-sky-700 shadow-sm ring-1 ring-sky-200 transition hover:bg-sky-100"
+						class="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-sky-50 hover:text-sky-800"
 					>
 						<Icon name="mdi:telegram" class="size-4" aria-hidden="true" />
 						Telegram
@@ -121,7 +124,7 @@ const heroStyle = heroBackground
 						href={whatsAppShareUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-sky-700 shadow-sm ring-1 ring-sky-200 transition hover:bg-sky-100"
+						class="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-emerald-50 hover:text-emerald-800"
 					>
 						<Icon name="mdi:whatsapp" class="size-4" aria-hidden="true" />
 						WhatsApp
@@ -129,7 +132,7 @@ const heroStyle = heroBackground
 					<button
 						type="button"
 						data-share-copy={currentUrl}
-						class="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-sky-700 shadow-sm ring-1 ring-sky-200 transition hover:bg-sky-100"
+						class="inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-violet-50 hover:text-violet-800"
 					>
 						<Icon name="mdi:link-variant" class="size-4" aria-hidden="true" />
 						<span data-share-copy-label>Ссылка</span>
@@ -138,11 +141,11 @@ const heroStyle = heroBackground
 			</div>
 		</section>
 
-		<section class="rounded-2xl bg-zinc-950 p-6 text-white md:-mx-12 md:p-8">
+		<section class="rounded-2xl bg-violet-50 p-6 text-zinc-950 ring-1 ring-violet-200/70 md:-mx-12 md:p-8">
 			<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
 					<h2 class="text-2xl font-bold">Следите за событиями центра</h2>
-					<p class="mt-2 max-w-xl text-pretty text-sm leading-relaxed text-zinc-300 sm:text-base">
+					<p class="mt-2 max-w-xl text-pretty text-sm leading-relaxed text-violet-950/70 sm:text-base">
 						Анонсы мероприятий, фото и видео с встреч публикуем в Instagram центра «Идел».
 					</p>
 				</div>
@@ -150,7 +153,7 @@ const heroStyle = heroBackground
 					href="https://www.instagram.com/idel_almaty_tatarskyi_centre"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-zinc-950 transition hover:bg-sky-100"
+					class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-violet-800 ring-1 ring-violet-200 transition hover:bg-violet-100"
 				>
 					<Icon name="mdi:instagram" class="size-5" aria-hidden="true" />
 					Instagram
@@ -170,7 +173,7 @@ const heroStyle = heroBackground
 								<Icon name="mdi:arrow-left" class="size-4" aria-hidden="true" />
 								Новее
 							</span>
-							<span class="mt-2 block text-pretty text-lg font-bold text-zinc-950 group-hover:text-sky-700">
+							<span class="mt-2 block line-clamp-2 text-pretty text-lg font-bold text-zinc-950 group-hover:text-sky-700">
 								{previousPost.data.title}
 							</span>
 						</a>
@@ -186,7 +189,7 @@ const heroStyle = heroBackground
 								Старее
 								<Icon name="mdi:arrow-right" class="size-4" aria-hidden="true" />
 							</span>
-							<span class="mt-2 block text-pretty text-lg font-bold text-zinc-950 group-hover:text-sky-700">
+							<span class="mt-2 block line-clamp-2 text-pretty text-lg font-bold text-zinc-950 group-hover:text-sky-700">
 								{nextPost.data.title}
 							</span>
 						</a>

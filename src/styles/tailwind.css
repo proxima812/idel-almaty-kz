@@ -1,4 +1,8 @@
-@import "tailwindcss";
+/* source(none) отключает автопоиск: иначе Tailwind сканирует весь проект,
+   включая .agents/, DESIGN.md и прочие служебные файлы, и тащит в сборку
+   классы, которых на сайте нет. Ниже — только реальные исходники. */
+@import "tailwindcss" source(none);
+@source "../../src/**/*.{astro,ts,tsx,js,jsx,md,mdx}";
 @plugin "@tailwindcss/typography";
 @plugin "@toolwind/corner-shape";
 

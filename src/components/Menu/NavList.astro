@@ -2,7 +2,13 @@
 import { cn } from "@/utils/cn";
 import { Icon } from "astro-icon/components";
 
-const { navigation = [], className = "", ...props } = Astro.props;
+const {
+	navigation = [],
+	className = "",
+	counts = {} as Record<string, number>,
+	badgeClass = "",
+	...props
+} = Astro.props;
 
 const { pathname } = Astro.url;
 
@@ -26,6 +32,18 @@ const normalize = (path = "") => (path === "/" ? "/" : path.replace(/\/$/, ""));
 				{item.icon && <Icon name={item.icon} class={item.icon_style ?? ""} />}
 
 				<span>{item.label}</span>
+
+				{item.countFrom && counts[item.countFrom] > 0 && (
+					<span
+						class={cn(
+							"-mt-2.5 grid h-4.5 min-w-4.5 place-items-center rounded-full bg-zinc-900 px-1 text-[10px] font-semibold leading-none text-white tabular-nums",
+							badgeClass,
+						)}
+						aria-hidden="true"
+					>
+						{counts[item.countFrom]}
+					</span>
+				)}
 			</a>
 		);
 	})

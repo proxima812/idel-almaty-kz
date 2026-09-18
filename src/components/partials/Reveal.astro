@@ -1,0 +1,82 @@
+---
+/**
+ * Лёгкие анимации появления на Motion.
+ *
+ * Разметку менять не нужно: анимируются прямые потомки контейнера
+ * с `data-reveal-auto` (его ставит Layout) и всё, помеченное `data-reveal`.
+ * Карточки внутри `data-reveal-stagger` выезжают по очереди.
+ *
+ * Элементы прячутся только если JS реально стартовал (класс на <html>),
+ * поэтому без JS и у поисковиков контент виден всегда.
+ */
+---
+
+<script is:inline>
+	if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+		document.documentElement.classList.add("js-reveal");
+	}
+</script>
+
+<style is:global>
+	.js-reveal [data-reveal-auto] > *,
+	.js-reveal [data-reveal] {
+		opacity: 0;
+	}
+</style>
+
+<script>
+	// mini-сборка animate работает на Web Animations API и весит в разы меньше
+	// полной: для «появления» её возможностей хватает с запасом.
+	import { animate } from "motion/mini";
+	import { inView, stagger } from "motion";
+
+	const EASE = [0.16, 1, 0.3, 1] as const;
+	const RISE = ["translateY(14px)", "none"];
+
+	/** Страховка: что бы ни пошло не так — контент обязан стать видимым. */
+	const revealAll = () => document.documentElement.classList.remove("js-reveal");
+
+	if (document.documentElement.classList.contains("js-reveal")) {
+		let started = false;
+
+		// Если IntersectionObserver недоступен или анимации молча не стартовали,
+		// снимаем opacity: 0 вручную, иначе страница осталась бы пустой.
+		setTimeout(() => {
+			if (!started) revealAll();
+		}, 3000);
+
+		const targets = [
+			...document.querySelectorAll<HTMLElement>("[data-reveal-auto] > *"),
+			...document.querySelectorAll<HTMLElement>("[data-reveal]"),
+		];
+
+		try {
+			inView(
+				targets,
+				(el) => {
+					started = true;
+					const target = el as HTMLElement;
+
+					animate(target, { opacity: 1, transform: RISE }, { duration: 0.5, ease: EASE });
+
+					if (target.matches("[data-reveal-stagger]")) {
+						const children = Array.from(target.children) as HTMLElement[];
+						if (children.length > 1) {
+							animate(
+								children,
+								{ opacity: [0, 1], transform: RISE },
+								{ duration: 0.45, ease: EASE, delay: stagger(0.06) },
+							);
+						}
+					}
+
+					// Анимируем один раз — повторное появление при скролле не нужно.
+					return false;
+				},
+				{ margin: "0px 0px -12% 0px" },
+			);
+		} catch {
+			revealAll();
+		}
+	}
+</script>

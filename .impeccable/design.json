@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-19T00:00:00+05:00",
+  "title": "Design System: Idel Almaty",
+  "extensions": {
+    "colorMeta": {
+      "white-hall": {
+        "role": "neutral",
+        "displayName": "White Hall",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#18181b", "#27272a", "#3f3f46", "#71717a", "#a1a1aa", "#d4d4d8", "#f4f4f5", "#ffffff"]
+      },
+      "zinc-ink": {
+        "role": "primary",
+        "displayName": "Zinc Ink",
+        "canonical": "#18181b",
+        "tonalRamp": ["#09090b", "#18181b", "#27272a", "#3f3f46", "#71717a", "#a1a1aa", "#d4d4d8", "#f4f4f5"]
+      },
+      "community-black": {
+        "role": "primary",
+        "displayName": "Community Black",
+        "canonical": "#111111",
+        "tonalRamp": ["#050505", "#111111", "#262626", "#404040", "#737373", "#a3a3a3", "#d4d4d4", "#fafafa"]
+      },
+      "amber-memory": {
+        "role": "secondary",
+        "displayName": "Amber Memory",
+        "canonical": "#fef3c7",
+        "tonalRamp": ["#451a03", "#78350f", "#b45309", "#f59e0b", "#fbbf24", "#fde68a", "#fef3c7", "#fffbeb"]
+      },
+      "rose-gathering": {
+        "role": "secondary",
+        "displayName": "Rose Gathering",
+        "canonical": "#ffe4e6",
+        "tonalRamp": ["#4c0519", "#881337", "#be123c", "#e11d48", "#fb7185", "#fecdd3", "#ffe4e6", "#fff1f2"]
+      },
+      "sky-link": {
+        "role": "secondary",
+        "displayName": "Sky Link",
+        "canonical": "#e0f2fe",
+        "tonalRamp": ["#082f49", "#075985", "#0369a1", "#0284c7", "#38bdf8", "#bae6fd", "#e0f2fe", "#f0f9ff"]
+      },
+      "violet-signal": {
+        "role": "secondary",
+        "displayName": "Violet Signal",
+        "canonical": "#f5f3ff",
+        "tonalRamp": ["#2e1065", "#4c1d95", "#6d28d9", "#8b5cf6", "#a78bfa", "#ddd6fe", "#ede9fe", "#f5f3ff"]
+      },
+      "emerald-new": {
+        "role": "tertiary",
+        "displayName": "Emerald New",
+        "canonical": "#047857",
+        "tonalRamp": ["#022c22", "#064e3b", "#047857", "#059669", "#34d399", "#a7f3d0", "#d1fae5", "#ecfdf5"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Homepage identity and major page headings."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings and sticky information cards."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "News, story, and repeated content titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Readable Russian content and explanatory copy."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Compact chips, statuses, metadata, and small action text."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-soft",
+        "value": "0 1px 2px rgb(212 212 216 / 0.3)",
+        "purpose": "Quiet separation on zinc section containers."
+      },
+      {
+        "name": "card-medium",
+        "value": "0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)",
+        "purpose": "StyleBox shells and sticky community cards."
+      },
+      {
+        "name": "heartbeat-ring",
+        "value": "0 0 0 2px rgba(56, 189, 248, 0.45)",
+        "purpose": "Soft animated emphasis for key CTAs."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-fast",
+        "value": "75ms ease-out",
+        "purpose": "Small hover lifts and compact state changes."
+      },
+      {
+        "name": "overlay-open",
+        "value": "300ms ease-out",
+        "purpose": "Mobile menu overlay entrance."
+      },
+      {
+        "name": "button-heartbeat",
+        "value": "3s ease-in-out infinite",
+        "purpose": "Occasional CTA emphasis; respect reduced motion in future additions."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Dark CTA Button",
+      "kind": "button",
+      "refersTo": "button-dark",
+      "description": "Compact decisive action button used for news card CTAs.",
+      "html": "<button class=\"ds-btn-dark\" type=\"button\"><span class=\"ds-btn-icon\">✦</span><span>Подробнее</span></button>",
+      "css": ".ds-btn-dark { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 6px 16px; border: 0; border-radius: 8px; background: linear-gradient(135deg, #27272a, rgba(0,0,0,0.9)); color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 500; line-height: 1.25; transition: opacity 150ms ease-out, transform 75ms ease-out; } .ds-btn-dark:hover { opacity: 0.9; transform: translateY(-1px); } .ds-btn-dark:focus-visible { outline: 2px solid #71717a; outline-offset: 2px; } .ds-btn-icon { font-size: 14px; line-height: 1; }"
+    },
+    {
+      "name": "Neutral Status Chip",
+      "kind": "chip",
+      "refersTo": "chip-neutral",
+      "description": "Small pill for section labels and status metadata.",
+      "html": "<span class=\"ds-chip-neutral\">О центре</span>",
+      "css": ".ds-chip-neutral { display: inline-flex; align-items: center; border: 1px solid rgba(212, 212, 216, 0.7); border-radius: 9999px; background: #ffffff; padding: 4px 12px; color: #3f3f46; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 600; line-height: 1.2; letter-spacing: 0.08em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Editorial Card",
+      "kind": "card",
+      "refersTo": "card-editorial",
+      "description": "Quiet news/content card with strong title hierarchy and soft zinc surface.",
+      "html": "<article class=\"ds-card-editorial\"><h3>Татарский центр «Идел» в Алматы</h3><p>Центр объединяет татар и башкир, развивает культурные инициативы и поддерживает живую связь поколений.</p></article>",
+      "css": ".ds-card-editorial { max-width: 520px; border: 1px solid rgba(161, 161, 170, 0.4); border-radius: 24px; background: #fafafa; padding: 24px; color: #18181b; box-shadow: 0 1px 2px rgba(212, 212, 216, 0.3); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; } .ds-card-editorial h3 { margin: 0 0 8px; color: #18181b; font-size: 24px; font-weight: 700; line-height: 1.15; letter-spacing: -0.025em; text-wrap: balance; } .ds-card-editorial p { margin: 0; color: #3f3f46; font-size: 16px; line-height: 1.625; text-wrap: pretty; }"
+    },
+    {
+      "name": "Instagram Action",
+      "kind": "button",
+      "refersTo": "button-social",
+      "description": "Tinted social action pill for Instagram links.",
+      "html": "<a class=\"ds-action-instagram\" href=\"#\"><span>@idel_almaty_tatarskyi_centre</span></a>",
+      "css": ".ds-action-instagram { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; background: #fdf2f8; color: #be185d; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 16px; font-weight: 500; line-height: 1.25; text-decoration: none; transition: background-color 150ms ease-out; } .ds-action-instagram:hover { background: #fce7f3; } .ds-action-instagram:focus-visible { outline: 2px solid #ec4899; outline-offset: 2px; }"
+    },
+    {
+      "name": "Mobile Menu Button",
+      "kind": "nav",
+      "refersTo": "button-mobile-menu",
+      "description": "Compact black square that opens the mobile navigation overlay.",
+      "html": "<button class=\"ds-mobile-menu\" type=\"button\" aria-label=\"Мобильное меню\">☰</button>",
+      "css": ".ds-mobile-menu { display: inline-flex; width: 40px; height: 36px; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: #27272a; color: #ffffff; font-size: 20px; line-height: 1; transition: background-color 150ms ease-out, transform 75ms ease-out; } .ds-mobile-menu:hover { background: #18181b; transform: translateY(-1px); } .ds-mobile-menu:focus-visible { outline: 2px solid #71717a; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Живая доска центра",
+    "overview": "The system should feel like the living public board of a cultural center: current, practical, welcoming, and grounded in real people. It is a brand/community site, not an app shell and not a corporate campaign. White space, direct Russian copy, local photos, compact navigation, and simple action links carry the experience.\n\nThe visual language is local, human, cultural, and clear. It uses a white editorial base with zinc text, black practical calls to action, and small community color fields for sections and tags. It explicitly rejects a generic corporate landing page, stock-cultural festival templates, anonymous NGO polish, heavy folklore ornament, and replacing real center/event photos with generic imagery.",
+    "keyCharacteristics": [
+      "White, readable editorial surfaces with strong zinc ink.",
+      "Compact cards and practical buttons rather than decorative marketing blocks.",
+      "Real community content first: news, activists, events, gallery, contacts.",
+      "Small color accents for meaning and section identity, never as generic decoration.",
+      "Rounded surfaces are present, but the site should not drift into pillowy SaaS styling."
+    ],
+    "rules": [
+      {
+        "name": "The Community Accent Rule",
+        "body": "Color marks a job: social, map, new status, event block, or section identity. Do not spread accent color just to make the page feel designed.",
+        "section": "colors"
+      },
+      {
+        "name": "The White Hall Rule",
+        "body": "The site starts from a white public-room surface. Warmth comes from content, photos, and accents, not from beige body backgrounds.",
+        "section": "colors"
+      },
+      {
+        "name": "The Plain Russian Rule",
+        "body": "Prioritize readable Russian text over decorative styling. Do not use ornate display fonts or artificial folk styling unless explicitly requested.",
+        "section": "typography"
+      },
+      {
+        "name": "The Balance Rule",
+        "body": "Headings should use balanced wrapping and avoid overflow on mobile; long Russian words must fit before any visual flourish is accepted.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-First Rule",
+        "body": "Surfaces are readable at rest through color, border, and spacing. Shadow may support a state or card boundary, but it should not become the main visual idea.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep White Hall, Zinc Ink, and compact navigation as the baseline for public pages.",
+      "Do use real center/event/activist photos whenever the content calls for imagery.",
+      "Do use community color accents only when they communicate role: social, map, new status, section identity, or event grouping.",
+      "Do preserve readable Russian hierarchy with balanced headings, strong titles, and body lines around 65-75ch.",
+      "Do keep action paths practical: Instagram, 2GIS, contacts, events, and stories should be obvious."
+    ],
+    "donts": [
+      "Don't make the site feel like a generic corporate landing page.",
+      "Don't use a stock cultural festival template, anonymous NGO brochure styling, or decorative folklore motifs as a substitute for real content.",
+      "Don't replace real center and event photos with generic imagery.",
+      "Don't overuse ornamental ethnic motifs or redesign away from the existing editorial/community character without an explicit request.",
+      "Don't repeat tiny uppercase tracked labels above every section as generic scaffolding.",
+      "Don't pair decorative 1px borders with large soft shadows on every card; choose structural border or light elevation deliberately."
+    ]
+  }
+}

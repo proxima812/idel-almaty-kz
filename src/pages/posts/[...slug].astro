@@ -166,7 +166,7 @@ const heroStyle = heroBackground
 				<nav aria-label="Навигация по постам" class="grid gap-3 md:-mx-12 md:grid-cols-2">
 					{previousPost ? (
 						<a
-							href={`/posts/${previousPost.id}`}
+							href={`/posts/${previousPost.id}/`}
 							class="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-zinc-900/10 transition hover:-translate-y-0.5 hover:shadow-md"
 						>
 							<span class="inline-flex items-center gap-2 text-sm font-semibold text-zinc-500">
@@ -182,7 +182,7 @@ const heroStyle = heroBackground
 					)}
 					{nextPost && (
 						<a
-							href={`/posts/${nextPost.id}`}
+							href={`/posts/${nextPost.id}/`}
 							class="group rounded-2xl bg-white p-5 text-left shadow-sm ring-1 ring-zinc-900/10 transition hover:-translate-y-0.5 hover:shadow-md md:text-right"
 						>
 							<span class="inline-flex items-center gap-2 text-sm font-semibold text-zinc-500 md:justify-end">

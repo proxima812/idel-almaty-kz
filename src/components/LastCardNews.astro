@@ -7,7 +7,7 @@ const { data, id } = Astro.props;
 ---
 
 <StyleBox variant="gray" innerClass="p-6" outClassFirst="max-w-none">
-	<a href={`/posts/${id}`} title={data.title}>
+	<a href={`/posts/${id}/`} title={data.title}>
 		<article class="flex flex-col gap-3 justify-between">
 			<div>
 				<h3 class="mb-2 h-22.5 font-bold leading-tight text-2xl line-clamp-3">

@@ -16,6 +16,9 @@
 # скачать файл вместо показа. В списке «статика через nginx» в Plesk avif
 # тоже нет, поэтому запросы доходят до Apache.
 <IfModule mod_mime.c>
+	# Без charset Apache отдаёт HTML как просто text/html.
+	AddDefaultCharset UTF-8
+	AddCharset UTF-8 .html .xml .txt .json
 	AddType image/avif .avif
 	AddType image/avif-sequence .avifs
 	AddType image/webp .webp

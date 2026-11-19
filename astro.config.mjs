@@ -27,6 +27,7 @@ export default defineConfig({
 		}),
 	],
 	output: "static",
+	trailingSlash: "always",
 	vite: {
 		plugins: [tailwindcss()],
 		

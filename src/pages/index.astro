@@ -1,8 +1,9 @@
 ---
 import Ggis2Btn from "@/components/Ggis2Btn.astro";
 import MainTitle from "@/components/index/MainTitle.astro";
+import JoinBlock from "@/components/JoinBlock.astro";
 import InstagramBtn from "@/components/InstagramBtn.astro";
-import LastCardNews from "@/components/LastCardNews.astro";
+import PostCard from "@/components/PostCard.astro";
 import StickyList from "@/components/StickyList.astro";
 import Layout from "@/layouts/Layout.astro";
 import { Icon } from "astro-icon/components";
@@ -11,43 +12,63 @@ import { getCollection } from "astro:content";
 const posts = (await getCollection("posts"))
 	.filter((post) => !post.data.draft)
 	.sort((a, b) => +new Date(b.data.pubDate) - +new Date(a.data.pubDate));
+const [featured, ...rest] = posts.slice(0, 3);
 ---
 
 <Layout>
 	<MainTitle />
 
 	<!-- Подпишись, чтобы быть в курсе новостей 🔥 -->
-
-	<section class="flex gap-2.5 justify-center flex-wrap">
-		<p class="font-medium w-full text-center">Будь в курсе событий 🔥</p>
-
-		<InstagramBtn href="https://www.instagram.com/idel_almaty_tatarskyi_centre" />
-		<Ggis2Btn />
-	</section>
-
-	<!-- <section class="out-size">
-  </section> -->
-	<section>
-		<span class="flex items-center justify-center gap-1 mb-6 text-zinc-600 font-medium">
-			<Icon name="mdi:playlist-check" />Последние события центра</span
-		>
-
-		{/* Mobile */}
-		<div class="block md:hidden">
-			{
-				posts &&
-					posts.slice(0, 1).map((item) => <LastCardNews data={item.data} id={item.id} />)
-			}
-		</div>
-
-		{/* Tablet / Desktop */}
-		<div class="grid-cols-1 md:grid-cols-3 hidden md:grid gap-3" data-reveal data-reveal-stagger>
-			{
-				posts &&
-					posts.slice(0, 3).map((item) => <LastCardNews data={item.data} id={item.id} />)
-			}
+	<section class="flex flex-col items-center gap-4">
+		<p class="flex items-center gap-2 text-sm font-medium text-zinc-500">
+			<span class="relative flex size-2">
+				<span class="absolute inline-flex size-full animate-ping rounded-full bg-orange-400 opacity-75"></span>
+				<span class="relative inline-flex size-2 rounded-full bg-orange-500"></span>
+			</span>
+			Будь в курсе событий 🔥
+		</p>
+		<div class="flex flex-wrap justify-center gap-3">
+			<InstagramBtn href="https://www.instagram.com/idel_almaty_tatarskyi_centre" />
+			<Ggis2Btn />
 		</div>
 	</section>
+
+	{
+		featured && (
+			<section aria-labelledby="latest-heading" class="flex flex-col gap-6">
+				<div class="flex items-end justify-between gap-4">
+					<div>
+						<p class="text-sm font-medium text-zinc-500">События</p>
+						<h2
+							id="latest-heading"
+							class="mt-1 text-2xl font-medium tracking-[-0.01em] sm:text-[28px] sm:leading-8.5"
+						>
+							Последние события центра
+						</h2>
+					</div>
+					<a href="/posts/" class="btn btn-tertiary btn-sm">
+						<span>Все события</span>
+						<Icon name="mdi:arrow-right" />
+					</a>
+				</div>
+
+				<div
+					class="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-5"
+					data-reveal
+					data-reveal-stagger
+				>
+					<PostCard post={featured} size="lg" eager class="md:col-span-3" />
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:col-span-2 md:grid-cols-1">
+						{rest.map((post) => (
+							<PostCard post={post} />
+						))}
+					</div>
+				</div>
+			</section>
+		)
+	}
 
 	<StickyList />
+
+	<JoinBlock />
 </Layout>

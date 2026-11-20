@@ -1,43 +1,257 @@
 ---
+/**
+ * Шапка по образцу heroui.com: логотип слева, меню с выпадающими
+ * панелями по центру, Instagram и чёрная кнопка справа.
+ */
 import logo from "@/assets/svg/idel-logo.svg";
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
-import Menu from "../Menu/Menu.astro";
-import Container from "./Container.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("posts"))
+	.filter((post) => !post.data.draft)
+	.sort((a, b) => +b.data.pubDate - +a.data.pubDate);
+const storiesCount = (await getCollection("stories")).length;
+
+type Item = { label: string; href: string; icon: string; text: string };
+type Group = { label: string; items: Item[] } | { label: string; href: string };
+
+const menu: Group[] = [
+	{
+		label: "Центр",
+		items: [
+			{ label: "О нас", href: "/", icon: "mdi:home-heart", text: "Кто мы и чем живет «Идел»" },
+			{
+				label: "Истории активистов",
+				href: "/stories/",
+				icon: "mdi:account-star",
+				text: `${storiesCount} историй людей центра`,
+			},
+			{
+				label: "Татарский | Ансамбли",
+				href: "/events/",
+				icon: "mdi:account-music",
+				text: "Уроки языка и творческие коллективы",
+			},
+		],
+	},
+	{
+		label: "События",
+		items: [
+			{
+				label: "Все события",
+				href: "/posts/",
+				icon: "mdi:calendar-star",
+				text: `${posts.length} публикаций с 2020 года`,
+			},
+			...posts.slice(0, 2).map((post) => ({
+				label: post.data.title,
+				href: `/posts/${post.id}/`,
+				icon: "mdi:bell-ring",
+				text: post.data.pubDate.toLocaleDateString("ru-RU", {
+					day: "numeric",
+					month: "long",
+					year: "numeric",
+				}),
+			})),
+		],
+	},
+	{ label: "Контакты", href: "/contacts/" },
+];
+
+const instagram = "https://www.instagram.com/idel_almaty_tatarskyi_centre/";
+const path = Astro.url.pathname;
 ---
 
-<header id="header" class="py-5">
-	<Container class="flex justify-between items-center">
-		<a href="/">
-			<Image
-				id="img"
-				src={logo}
-				width={45}
-				height={45}
-				alt="Логотип idel-almaty.kz"
-				title="Логотип"
-				aria-label="Изображение"
-			/>
+<header
+	id="header"
+	class="sticky top-0 z-50 flex w-full justify-center px-6 py-4 max-md:bg-white max-md:px-4 max-md:py-1"
+>
+	<div
+		aria-hidden="true"
+		class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[calc(100%+1.5rem)] bg-linear-to-b from-white via-white/80 to-transparent max-md:hidden"
+	>
+	</div>
+
+	<div
+		class="flex w-full max-w-5xl items-center justify-between max-md:h-12 md:grid md:grid-cols-[1fr_auto_1fr]"
+	>
+		<a href="/" aria-label="Идел — главная" class="flex shrink-0 items-center gap-2 justify-self-start">
+			<Image src={logo} width={36} height={36} alt="" class="size-8 md:size-9" />
+			<span class="text-lg font-semibold tracking-tight">Идел</span>
 		</a>
-		<Menu class="justify-between">
-			<div class="flex items-center ml-16 gap-5">
-				<a
-					href="/contacts/"
-					title=""
-					class="text-zinc-800 flex items-center gap-1 transition-colors hover:text-zinc-600"
-				>
-					<Icon class="text-violet-500" name="mdi:message-badge" />
-					<span>Контакты</span>
-				</a>
-				<a
-					href="/gallery/"
-					title=""
-					class="text-zinc-800 flex items-center gap-1 transition-colors hover:text-zinc-600"
-				>
-					<Icon class="text-violet-500" name="mdi:view-grid" />
-					<span>Активисты | Галерия</span>
-				</a>
-			</div>
-		</Menu>
-	</Container>
+
+		<nav aria-label="Главное меню" class="max-md:hidden">
+			<ul class="flex items-center gap-5">
+				{
+					menu.map((group) =>
+						"items" in group ? (
+							<li class="group/dd relative" data-dropdown>
+								<button
+									type="button"
+									aria-expanded="false"
+									class="flex h-8 cursor-pointer items-center gap-1 text-sm font-medium text-zinc-500 transition-colors group-hover/dd:text-zinc-900 group-data-open/dd:text-zinc-900 hover:text-zinc-900"
+								>
+									{group.label}
+									<Icon
+										name="mdi:chevron-down"
+										class="transition-transform duration-200 group-hover/dd:rotate-180 group-data-open/dd:rotate-180"
+									/>
+								</button>
+								<div class="invisible absolute top-full left-1/2 w-80 -translate-x-1/2 scale-[.97] pt-3 opacity-0 transition-[opacity,scale,visibility] duration-300 ease-[cubic-bezier(.22,1,.36,1)] group-hover/dd:visible group-hover/dd:scale-100 group-hover/dd:opacity-100 group-data-open/dd:visible group-data-open/dd:scale-100 group-data-open/dd:opacity-100">
+									<ul class="rounded-3xl border border-black/8 bg-white p-1.5 shadow-[0_16px_40px_-12px_#0000002e,0_2px_6px_0_#0000000a]">
+										{group.items.map((item) => (
+											<li>
+												<a
+													href={item.href}
+													class="flex items-center gap-3 rounded-[18px] p-2 transition-colors hover:bg-black/5"
+												>
+													<span class="grid size-9 shrink-0 place-items-center rounded-xl bg-black/5 text-lg text-zinc-700">
+														<Icon name={item.icon} />
+													</span>
+													<span class="min-w-0">
+														<span class="block truncate text-sm font-medium text-zinc-900">
+															{item.label}
+														</span>
+														<span class="block truncate text-[13px] text-zinc-500">{item.text}</span>
+													</span>
+												</a>
+											</li>
+										))}
+									</ul>
+								</div>
+							</li>
+						) : (
+							<li>
+								<a
+									href={group.href}
+									class:list={[
+										"text-sm font-medium transition-colors hover:text-zinc-900",
+										path === group.href ? "text-zinc-900" : "text-zinc-500",
+									]}
+								>
+									{group.label}
+								</a>
+							</li>
+						),
+					)
+				}
+			</ul>
+		</nav>
+
+		<div class="flex h-8 items-center gap-5 justify-self-end max-md:gap-1.5">
+			<a
+				href={instagram}
+				target="_blank"
+				rel="noopener noreferrer"
+				aria-label="Instagram центра"
+				class="flex items-center gap-1.5 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900 max-lg:hidden"
+			>
+				<Icon name="mdi:instagram" class="text-lg" />
+				<span>Instagram</span>
+			</a>
+			<a href="/#join" class="btn btn-sm btn-3d h-8 gap-1.5 px-3 text-[13px]">
+				<Icon name="mdi:account-plus" class="text-base" />Присоединиться
+			</a>
+			<button
+				id="menu-toggle"
+				type="button"
+				aria-label="Открыть меню"
+				aria-expanded="false"
+				aria-controls="mobile-menu"
+				class="grid size-9 cursor-pointer place-items-center rounded-full text-xl transition-colors hover:bg-black/5 md:hidden"
+			>
+				<Icon name="mdi:menu" data-icon-open />
+				<Icon name="mdi:close" data-icon-close class="hidden" />
+			</button>
+		</div>
+	</div>
+
+	<!-- MOBILE MENU -->
+	<div
+		id="mobile-menu"
+		aria-hidden="true"
+		class="invisible fixed inset-x-0 top-14 bottom-0 z-40 overflow-y-auto bg-white px-4 pb-10 opacity-0 transition-[opacity,visibility] duration-200 data-open:visible data-open:opacity-100 md:hidden"
+	>
+		<nav aria-label="Мобильное меню" class="flex flex-col">
+			{
+				menu.map((group) =>
+					"items" in group ? (
+						<details class="group border-b border-black/8" open>
+							<summary class="flex cursor-pointer list-none items-center justify-between py-4.5 text-[15px] leading-5 font-medium [&::-webkit-details-marker]:hidden">
+								{group.label}
+								<Icon name="mdi:chevron-down" class="transition-transform group-open:rotate-180" />
+							</summary>
+							<ul class="flex flex-col gap-3 pb-5 text-sm">
+								{group.items.map((item) => (
+									<li>
+										<a href={item.href} class="flex items-center gap-2 text-zinc-500 hover:text-zinc-900">
+											<Icon name={item.icon} class="shrink-0" />
+											<span class="line-clamp-1">{item.label}</span>
+										</a>
+									</li>
+								))}
+							</ul>
+						</details>
+					) : (
+						<a href={group.href} class="border-b border-black/8 py-4.5 text-[15px] leading-5 font-medium">
+							{group.label}
+						</a>
+					),
+				)
+			}
+			<a
+				href={instagram}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="btn btn-tertiary mt-6 w-full"
+			>
+				<Icon name="mdi:instagram" class="text-lg" />Instagram центра
+			</a>
+		</nav>
+	</div>
 </header>
+
+<script>
+	// Выпадающие меню: на десктопе открываются по наведению (CSS),
+	// а по клику/тапу — через data-open, чтобы работало и без мыши.
+	const dropdowns = [...document.querySelectorAll<HTMLElement>("[data-dropdown]")];
+	const closeAll = (except?: HTMLElement) => {
+		for (const dd of dropdowns) {
+			if (dd === except) continue;
+			dd.removeAttribute("data-open");
+			dd.querySelector("button")?.setAttribute("aria-expanded", "false");
+		}
+	};
+	for (const dd of dropdowns) {
+		const btn = dd.querySelector("button");
+		btn?.addEventListener("click", () => {
+			const open = !dd.hasAttribute("data-open");
+			closeAll(dd);
+			dd.toggleAttribute("data-open", open);
+			btn.setAttribute("aria-expanded", String(open));
+		});
+	}
+	document.addEventListener("click", (e) => {
+		if (!(e.target as HTMLElement).closest("[data-dropdown]")) closeAll();
+	});
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape") closeAll();
+	});
+
+	// Мобильное меню на весь экран под шапкой.
+	const toggle = document.getElementById("menu-toggle");
+	const menu = document.getElementById("mobile-menu");
+	const setMobile = (open: boolean) => {
+		menu?.toggleAttribute("data-open", open);
+		menu?.setAttribute("aria-hidden", String(!open));
+		toggle?.setAttribute("aria-expanded", String(open));
+		toggle?.querySelector("[data-icon-open]")?.classList.toggle("hidden", open);
+		toggle?.querySelector("[data-icon-close]")?.classList.toggle("hidden", !open);
+		document.body.classList.toggle("overflow-hidden", open);
+	};
+	toggle?.addEventListener("click", () => setMobile(!menu?.hasAttribute("data-open")));
+	menu?.addEventListener("click", (e) => {
+		if ((e.target as HTMLElement).closest("a")) setMobile(false);
+	});
+</script>

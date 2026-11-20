@@ -1,38 +1,174 @@
 ---
-import Card from "@/components/Card.astro";
-import InstagramBtn from "@/components/InstagramBtn.astro";
+/**
+ * Список событий по образцу heroui.com/blog: заголовок-заявление,
+ * переключатель годов + поиск, два больших поста и сетка остальных.
+ */
+import PostCard from "@/components/PostCard.astro";
 import Layout from "@/layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 
 const posts = (await getCollection("posts"))
 	.filter((post) => !post.data.draft)
 	.sort((a, b) => +new Date(b.data.pubDate) - +new Date(a.data.pubDate));
 
-const postsLength = posts.length;
-
-const sortedPosts = posts.sort((a, b) => {
-	const yearA = new Date(a.data.pubDate).getFullYear();
-	const yearB = new Date(b.data.pubDate).getFullYear();
-	return yearB - yearA;
-});
-
-// Создадим список уникальных годов.
-const uniqueYears = [...new Set(sortedPosts.map((item) => new Date(item.data.pubDate).getFullYear()))];
+const featured = posts.slice(0, 2);
+const years = [...new Set(posts.map((post) => post.data.pubDate.getFullYear()))];
 ---
 
-<Layout title="События за последнее время | Татаро-Башкирский центр Идел | 2020-2026">
-	{
-		uniqueYears.map((year) => (
-			<div class="select-none flex flex-col gap-5">
-				<h3 class="text-3xl font-bold">{year}</h3>
-				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" data-reveal data-reveal-stagger>
-					{sortedPosts
-						.filter((item) => new Date(item.data.pubDate).getFullYear() === year)
-						.map((item) => (
-							<Card data={item.data} id={item.id} />
-						))}
-				</div>
+<Layout
+	title="События за последнее время | Татаро-Башкирский центр Идел"
+	description="Новости, праздники и встречи Татаро-Башкирского центра «Идел» в Алматы."
+>
+	<div>
+		<p class="text-[15px] leading-5.5 font-medium text-zinc-900 md:text-base md:leading-6">События</p>
+		<h1
+			class="mt-4 text-[2.125rem] leading-9.5 font-medium tracking-[-0.02em] text-balance sm:mt-5 sm:text-4xl sm:leading-normal sm:tracking-[-0.72px] md:text-5xl"
+		>
+			<span class="block">Жизнь центра «Идел».</span>
+			<span class="block text-zinc-500/60">Праздники, встречи и новости.</span>
+		</h1>
+
+		<div class="mt-8 flex flex-col gap-3 sm:mt-10 md:flex-row md:items-center md:justify-between md:gap-6">
+			<div
+				role="radiogroup"
+				aria-label="Годы"
+				data-years
+				class="relative inline-flex max-w-full self-start overflow-x-auto rounded-full bg-black/5 p-0.75 [scrollbar-width:none]"
+			>
+				<span
+					data-indicator
+					aria-hidden="true"
+					class="absolute top-0.75 left-0 h-8 rounded-full bg-white shadow-[0_1px_2px_0_#0000000f,0_0_0_1px_#0000000a] transition-[translate,width] duration-250 ease-[cubic-bezier(.32,.72,0,1)]"
+				></span>
+				<button
+					type="button"
+					role="radio"
+					aria-checked="true"
+					data-year="all"
+					class="relative z-10 h-8 shrink-0 cursor-pointer rounded-full px-4 text-sm font-medium text-zinc-500 transition-colors aria-checked:text-zinc-900 max-sm:px-3 max-sm:text-[13px]"
+					>Все</button
+				>
+				{
+					years.map((year) => (
+						<button
+							type="button"
+							role="radio"
+							aria-checked="false"
+							data-year={year}
+							class="relative z-10 h-8 shrink-0 cursor-pointer rounded-full px-4 text-sm font-medium text-zinc-500 transition-colors aria-checked:text-zinc-900 max-sm:px-3 max-sm:text-[13px]"
+						>
+							{year}
+						</button>
+					))
+				}
 			</div>
-		))
-	}
+
+			<label
+				class="flex h-9 w-full items-center gap-2 rounded-xl bg-white/80 px-3 text-sm ring-1 ring-black/5 transition focus-within:ring-2 focus-within:ring-zinc-900/20 md:w-70"
+			>
+				<Icon name="mdi:magnify" class="shrink-0 text-lg text-zinc-400" />
+				<input
+					data-search
+					type="search"
+					placeholder="Поиск по событиям..."
+					aria-label="Поиск по событиям"
+					class="w-full bg-transparent outline-none placeholder:text-zinc-400"
+				/>
+			</label>
+		</div>
+
+		<ul data-featured class="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 md:gap-6">
+			{
+				featured.map((post) => (
+					<li>
+						<PostCard post={post} size="lg" eager />
+					</li>
+				))
+			}
+		</ul>
+
+		<section aria-labelledby="latest-posts-heading" class="mt-16 sm:mt-20" data-list>
+			<h2
+				id="latest-posts-heading"
+				data-list-title
+				class="text-2xl font-medium tracking-[-0.01em] sm:text-[28px] sm:leading-8.5"
+			>
+				Все события
+			</h2>
+			<ul class="mt-6 grid gap-4 sm:mt-7 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+				{
+					posts.map((post, i) => (
+						<li data-item data-featured-item={i < 2 ? "" : undefined} hidden={i < 2}>
+							<PostCard post={post} />
+						</li>
+					))
+				}
+			</ul>
+			<p data-empty hidden class="mt-6 rounded-3xl bg-white p-10 text-center text-zinc-500">
+				Ничего не нашлось 🙈
+			</p>
+		</section>
+	</div>
 </Layout>
+
+<script>
+	const group = document.querySelector<HTMLElement>("[data-years]");
+	const indicator = document.querySelector<HTMLElement>("[data-indicator]");
+	const search = document.querySelector<HTMLInputElement>("[data-search]");
+	const featured = document.querySelector<HTMLElement>("[data-featured]");
+	const listTitle = document.querySelector<HTMLElement>("[data-list-title]");
+	const empty = document.querySelector<HTMLElement>("[data-empty]");
+	const items = [...document.querySelectorAll<HTMLElement>("[data-item]")];
+	const buttons = [...(group?.querySelectorAll<HTMLButtonElement>("[data-year]") ?? [])];
+
+	let year = "all";
+
+	const moveIndicator = (btn: HTMLElement) => {
+		if (!indicator) return;
+		indicator.style.width = `${btn.offsetWidth}px`;
+		indicator.style.translate = `${btn.offsetLeft}px 0`;
+	};
+
+	const apply = () => {
+		const query = search?.value.trim().toLowerCase() ?? "";
+		// Без фильтров показываем как на heroui: два больших поста сверху,
+		// в сетке — остальные. С фильтром — всё найденное одной сеткой.
+		const filtering = year !== "all" || query !== "";
+		let shown = 0;
+
+		for (const item of items) {
+			const card = item.querySelector<HTMLElement>("[data-post-card]");
+			const okYear = year === "all" || card?.dataset.year === year;
+			const okQuery = !query || card?.dataset.search?.includes(query);
+			const hideFeatured = !filtering && item.hasAttribute("data-featured-item");
+			const visible = Boolean(okYear && okQuery && !hideFeatured);
+			item.hidden = !visible;
+			if (visible) shown++;
+		}
+
+		if (featured) featured.hidden = filtering;
+		if (listTitle) listTitle.textContent = filtering ? `Найдено: ${shown}` : "Все события";
+		if (empty) empty.hidden = shown > 0;
+	};
+
+	for (const btn of buttons) {
+		btn.addEventListener("click", () => {
+			year = btn.dataset.year ?? "all";
+			for (const b of buttons) b.setAttribute("aria-checked", String(b === btn));
+			moveIndicator(btn);
+			apply();
+		});
+	}
+
+	search?.addEventListener("input", apply);
+
+	const initial = buttons[0];
+	if (initial) {
+		moveIndicator(initial);
+		addEventListener("resize", () => {
+			const active = buttons.find((b) => b.getAttribute("aria-checked") === "true");
+			if (active) moveIndicator(active);
+		});
+	}
+</script>

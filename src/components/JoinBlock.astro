@@ -1,0 +1,217 @@
+---
+/**
+ * «Присоединяйся» — по мотивам блока AI tooling на heroui.com:
+ * от плитки «Идел» идёт линия к «Тебе», от тебя — ветки к направлениям.
+ * По веткам бегут огоньки; анимация играет, только пока блок в кадре.
+ */
+import idelLogo from "@/assets/svg/idel-logo.svg";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+
+// Координаты в системе viewBox 1000×600.
+const hub = { x: 500, y: 300 };
+const logo = { x: 210, y: 300 };
+const targets = [
+	{ x: 760, y: 95, icon: "mdi:microphone-variant", label: "Ансамбль" },
+	{ x: 830, y: 232, icon: "mdi:book-open-variant", label: "Татар теле" },
+	{ x: 830, y: 368, icon: "mdi:party-popper", label: "Сабантуй" },
+	{ x: 760, y: 505, icon: "mdi:camera", label: "Медиа" },
+];
+const curve = (t: { x: number; y: number }) =>
+	`M${hub.x} ${hub.y} C ${hub.x + 140} ${hub.y}, ${t.x - 170} ${t.y}, ${t.x} ${t.y}`;
+const pct = (v: number, of: number) => `${(v / of) * 100}%`;
+---
+
+<section
+	id="join"
+	aria-labelledby="join-heading"
+	class="flex scroll-mt-24 flex-col items-center text-center"
+>
+	<p class="text-base font-medium text-sky-600">Активистам</p>
+	<h2
+		id="join-heading"
+		class="mt-3 text-[clamp(2.5rem,7.4vw,4rem)] leading-none font-medium tracking-[-0.02em] text-balance"
+	>
+		<span class="block">Стань частью</span>
+		<span class="block text-zinc-400">«Идела».</span>
+	</h2>
+	<p class="mt-5 max-w-2xl text-lg leading-7 text-pretty text-zinc-500">
+		Пой в ансамбле, учи татарский, готовь с нами Сабантуй или снимай наши праздники. Приходи с
+		идеей — поможем ее воплотить.
+	</p>
+
+	<figure data-join aria-hidden="true" class="join-graph relative mt-6 aspect-5/3 w-full max-w-4xl">
+		<div class="join-dots absolute inset-0"></div>
+
+		<svg viewBox="0 0 1000 600" class="absolute inset-0 size-full overflow-visible" fill="none">
+			<defs>
+				<linearGradient id="join-glow" x1="0" x2="1">
+					<stop offset="0" stop-color="#60a5fa" stop-opacity="0"></stop>
+					<stop offset="1" stop-color="#3b82f6"></stop>
+				</linearGradient>
+			</defs>
+			<path d={`M${logo.x + 60} ${logo.y} H${hub.x}`} stroke="#dcdcde" stroke-width="2"></path>
+			{targets.map((t) => <path d={curve(t)} stroke="#dcdcde" stroke-width="2" />)}
+			{
+				targets.map((t, i) => (
+					<path
+						d={curve(t)}
+						pathLength="1000"
+						class="join-spark"
+						style={`--i: ${i}`}
+						stroke="url(#join-glow)"
+						stroke-width="3"
+						stroke-linecap="round"
+					/>
+				))
+			}
+			{
+				[0, 1, 2, 3, 4].map((n) => (
+					<circle
+						class="join-particle"
+						style={`--i: ${n}`}
+						cx={logo.x + 70}
+						cy={logo.y + (n % 2 ? -10 : 10) - n * 2}
+						r={n % 2 ? 4 : 5.5}
+						fill="#3b82f6"
+					/>
+				))
+			}
+		</svg>
+
+		<!-- Плитка «Идел» -->
+		<div
+			class="join-tile absolute -translate-1/2 rounded-[28%] bg-white p-[1.2cqw] shadow-[0_18px_40px_-12px_#0000002e] ring-1 ring-black/5"
+			style={`left:${pct(logo.x, 1000)};top:${pct(logo.y, 600)};width:15cqw;--i:0`}
+		>
+			<div
+				class="grid aspect-square place-items-center rounded-[24%] bg-linear-to-b from-white to-zinc-50 ring-1 ring-black/5"
+			>
+				<Image src={idelLogo} alt="Логотип «Идел»" width={160} height={160} class="w-[72%]" />
+			</div>
+		</div>
+
+		<!-- Ты -->
+		<div
+			class="join-tile absolute flex -translate-1/2 flex-col items-center gap-[0.8cqw]"
+			style={`left:${pct(hub.x, 1000)};top:${pct(hub.y, 600)};--i:1`}
+		>
+			<span
+				class="grid size-[10cqw] place-items-center rounded-[28%] bg-[#ececee] text-[4.4cqw] text-zinc-900 ring-1 ring-black/5"
+			>
+				<Icon name="mdi:account-heart" />
+			</span>
+		</div>
+
+		{
+			targets.map((t, i) => (
+				<div
+					class="join-tile absolute flex -translate-1/2 flex-col items-center"
+					style={`left:${pct(t.x, 1000)};top:${pct(t.y, 600)};--i:${i + 2}`}
+				>
+					<span class="grid size-[9cqw] place-items-center rounded-[28%] bg-[#ececee] text-[3.8cqw] text-zinc-900 ring-1 ring-black/5">
+						<Icon name={t.icon} />
+					</span>
+					<span class="absolute top-full mt-[0.6cqw] text-[max(10px,1.4cqw)] font-medium whitespace-nowrap text-zinc-500">
+						{t.label}
+					</span>
+				</div>
+			))
+		}
+	</figure>
+
+	<div class="mt-8 flex flex-wrap items-center justify-center gap-3 max-sm:w-full max-sm:flex-col">
+		<a
+			href="https://ig.me/m/idel_almaty_tatarskyi_centre"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="btn btn-primary max-sm:w-full"
+		>
+			Стать активистом
+		</a>
+		<a href="/stories/" class="btn btn-tertiary max-sm:w-full">Истории активистов</a>
+	</div>
+</section>
+
+<style>
+	.join-graph {
+		container-type: inline-size;
+	}
+	.join-dots {
+		background-image: radial-gradient(#00000014 1.2px, transparent 1.2px);
+		background-size: 22px 22px;
+		mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 40%, transparent 100%);
+	}
+	.join-spark {
+		stroke-dasharray: 140 1000;
+		stroke-dashoffset: 140;
+		opacity: 0;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.join-graph[data-armed]:not([data-play]) * {
+			animation-play-state: paused !important;
+		}
+		.join-graph[data-armed] .join-tile {
+			animation: join-pop 0.6s cubic-bezier(0.32, 0.72, 0, 1) calc(var(--i) * 90ms) both;
+		}
+		.join-graph[data-armed] .join-spark {
+			animation: join-spark 3.2s cubic-bezier(0.45, 0, 0.25, 1) calc(0.8s + var(--i) * 0.8s) infinite;
+		}
+		.join-graph[data-armed] .join-particle {
+			animation: join-particle 1.8s ease-out calc(var(--i) * 0.36s) infinite;
+		}
+	}
+
+	@keyframes join-pop {
+		0% {
+			opacity: 0;
+			scale: 0.85;
+		}
+	}
+	@keyframes join-spark {
+		0% {
+			stroke-dashoffset: 140;
+			opacity: 1;
+		}
+		55% {
+			stroke-dashoffset: -1000;
+			opacity: 1;
+		}
+		56%,
+		100% {
+			stroke-dashoffset: -1000;
+			opacity: 0;
+		}
+	}
+	@keyframes join-particle {
+		0% {
+			opacity: 0;
+			translate: 0 0;
+		}
+		20% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+			translate: 70px 0;
+		}
+	}
+</style>
+
+<script>
+	if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				for (const { target, isIntersecting } of entries) {
+					target.toggleAttribute("data-play", isIntersecting);
+				}
+			},
+			{ threshold: 0.3 },
+		);
+		for (const el of document.querySelectorAll("[data-join]")) {
+			el.setAttribute("data-armed", "");
+			io.observe(el);
+		}
+	}
+</script>

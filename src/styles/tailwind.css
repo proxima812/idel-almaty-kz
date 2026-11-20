@@ -96,3 +96,275 @@
 		animation: buttonheartbeat 3s ease-in-out infinite;
 	}
 }
+
+/* ── Кнопки как у heroui.com ─────────────────────────────────────────────
+   Плоские «таблетки»: btn-primary — чёрная, btn-tertiary — серая подложка. */
+@utility btn {
+	display: inline-flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	height: 2.5rem;
+	padding-inline: 1.125rem;
+	border-radius: 9999px;
+	font-size: 0.9375rem;
+	font-weight: 500;
+	white-space: nowrap;
+	cursor: pointer;
+	transition:
+		background-color 150ms,
+		color 150ms,
+		scale 150ms cubic-bezier(0.32, 0.72, 0, 1);
+	-webkit-tap-highlight-color: transparent;
+
+	&:active {
+		scale: 0.97;
+	}
+	&:focus-visible {
+		outline: 2px solid #18181b;
+		outline-offset: 2px;
+	}
+}
+@utility btn-sm {
+	height: 2.25rem;
+	padding-inline: 0.875rem;
+	font-size: 0.875rem;
+}
+@utility btn-primary {
+	background-color: #18181b;
+	color: #fff;
+	&:hover {
+		background-color: #3f3f46;
+	}
+}
+@utility btn-tertiary {
+	background-color: #0000000d;
+	color: #18181b;
+	&:hover {
+		background-color: #00000017;
+	}
+}
+
+/* Объёмная кнопка (как у tatarverse.cc): блик сверху, кант и свечение
+   снизу выводятся из одного цвета --btn-accent. */
+@utility btn-3d {
+	--btn-accent: #16a34a;
+	--btn-top: color-mix(in oklab, var(--btn-accent), white 20%);
+	--btn-edge: color-mix(in oklab, var(--btn-accent) 90%, black);
+	--btn-glow: color-mix(in oklab, var(--btn-accent) 45%, transparent);
+	color: #fff;
+	background-image: linear-gradient(180deg, var(--btn-top), var(--btn-accent));
+	box-shadow:
+		inset 0 1px 0 0 #ffffff4d,
+		0 0 0 1px var(--btn-edge),
+		0 1px 2px 0 color-mix(in oklab, var(--btn-accent) 25%, transparent),
+		0 8px 20px -6px var(--btn-glow);
+
+	&:hover {
+		background-image: linear-gradient(
+			180deg,
+			color-mix(in oklab, var(--btn-accent) 88%, white),
+			color-mix(in oklab, var(--btn-accent) 92%, black)
+		);
+	}
+	&:active {
+		background-image: linear-gradient(
+			180deg,
+			var(--btn-accent),
+			color-mix(in oklab, var(--btn-accent) 88%, black)
+		);
+		box-shadow:
+			inset 0 1px 2px 0 #00000026,
+			0 0 0 1px var(--btn-edge);
+	}
+}
+
+/* ── Текст поста как у heroui.com/blog ─────────────────────────────────── */
+.post-body {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+	color: #18181b;
+
+	& h2 {
+		margin-top: 1.75rem;
+		font-size: 1.5rem;
+		line-height: 2rem;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		scroll-margin-top: 6rem;
+	}
+	& h3 {
+		margin-top: 1rem;
+		font-size: 1.25rem;
+		line-height: 1.75rem;
+		font-weight: 500;
+		scroll-margin-top: 6rem;
+	}
+	& strong {
+		font-weight: 600;
+	}
+	& ul,
+	& ol {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	& ul > li {
+		position: relative;
+		padding-left: 1.25rem;
+		font-size: 1rem;
+		line-height: 1.75rem;
+	}
+	& ul > li::before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 11px;
+		width: 0.375rem;
+		height: 0.375rem;
+		border-radius: 9999px;
+		background: #a1a1aa;
+	}
+	& ol {
+		list-style: decimal;
+		padding-left: 1.25rem;
+	}
+	& ol > li {
+		padding-left: 0.25rem;
+		line-height: 1.75rem;
+	}
+	& li > p {
+		margin: 0;
+	}
+	& hr {
+		border-top: 1px solid #00000012;
+		margin-block: 1rem;
+	}
+	& code {
+		border: 1px solid #00000012;
+		border-radius: 5px;
+		padding: 3px;
+		font-size: 0.8125em;
+	}
+}
+
+/* ── Анимированные «витрины» секций (как у tatarverse.cc) ───────────────
+   Сцена внутри [data-showcase] стоит на паузе, пока не попала в экран:
+   скрипт в Showcase.astro вешает data-play. Без JS всё видно сразу. */
+.showcase {
+	--sc-ease: cubic-bezier(0.32, 0.72, 0, 1);
+	--sc-line: #18181b17;
+	--sc-shadow: 0 0 0 1px var(--sc-line), 0 1px 2px 0 #0a0a0b0d, 0 12px 32px -12px #0a0a0b2e;
+	--sc-shadow-hero: 0 0 0 1px var(--sc-line), 0 2px 4px 0 #0a0a0b0f, 0 24px 48px -16px #0a0a0b47;
+	position: relative;
+	aspect-ratio: 6 / 5;
+	margin: 0;
+	overflow: hidden;
+	border-radius: 28px;
+	corner-shape: squircle;
+	container-type: inline-size;
+}
+
+.showcase-scene {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	user-select: none;
+	font-size: clamp(11px, 3.4cqw, 18px);
+	line-height: 1.35;
+}
+
+.sc-card {
+	background: #fff;
+	box-shadow: var(--sc-shadow);
+	border-radius: 1.25em;
+	corner-shape: squircle;
+}
+.sc-card--hero {
+	box-shadow: var(--sc-shadow-hero);
+}
+.sc-bar {
+	display: block;
+	flex-shrink: 0;
+	height: 0.5em;
+	border-radius: 999px;
+	background: #ebebec;
+}
+.sc-bar--strong {
+	height: 0.6em;
+	background: #dadadc;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.showcase[data-armed]:not([data-play]) * {
+		animation-play-state: paused !important;
+	}
+	.showcase[data-armed] .sc-rise {
+		animation: sc-rise 0.6s var(--sc-ease) calc(0.15s + var(--i, 0) * 90ms) both;
+	}
+	.showcase[data-armed] .sc-pop {
+		animation: sc-pop 0.5s var(--sc-ease) calc(0.3s + var(--i, 0) * 90ms) both;
+	}
+	.showcase[data-armed] .sc-fade {
+		animation: sc-fade 0.6s ease-out calc(0.2s + var(--i, 0) * 90ms) both;
+	}
+	.showcase[data-armed] .sc-float {
+		animation:
+			sc-pop 0.5s var(--sc-ease) calc(0.3s + var(--i, 0) * 90ms) both,
+			sc-float 4s ease-in-out calc(1s + var(--i, 0) * 300ms) infinite;
+	}
+	.showcase[data-armed] .sc-grow {
+		transform-origin: left;
+		animation: sc-grow 0.9s var(--sc-ease) calc(0.4s + var(--i, 0) * 90ms) both;
+	}
+	.showcase[data-armed] .sc-cursor {
+		animation: sc-cursor 1.2s var(--sc-ease) 0.4s both;
+	}
+	.showcase[data-armed] .sc-press {
+		animation: sc-press 0.35s ease-out 1.5s both;
+	}
+}
+
+@keyframes sc-rise {
+	0% {
+		opacity: 0;
+		translate: 0 0.9em;
+	}
+}
+@keyframes sc-pop {
+	0% {
+		opacity: 0;
+		scale: 0.85;
+	}
+}
+@keyframes sc-fade {
+	0% {
+		opacity: 0;
+	}
+}
+@keyframes sc-grow {
+	0% {
+		transform: scaleX(0);
+	}
+}
+@keyframes sc-float {
+	50% {
+		translate: 0 -0.35em;
+	}
+}
+@keyframes sc-cursor {
+	0% {
+		opacity: 0;
+		translate: 6em 7em;
+	}
+	30% {
+		opacity: 1;
+	}
+}
+@keyframes sc-press {
+	50% {
+		scale: 0.94;
+	}
+}

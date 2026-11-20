@@ -42,7 +42,7 @@ if (local) {
 
 {
 	imageSrc && (
-		<figure class="not-prose my-8 overflow-hidden rounded-2xl bg-zinc-100 shadow-sm ring-1 ring-zinc-900/10">
+		<figure class="my-3 overflow-hidden rounded-3xl bg-white p-1 ring-1 ring-black/5">
 			<img
 				src={imageSrc}
 				srcset={srcset}
@@ -53,10 +53,10 @@ if (local) {
 				height={imageHeight}
 				loading="lazy"
 				decoding="async"
-				class:list={["h-auto w-full object-cover", className]}
+				class:list={["h-auto w-full rounded-[20px] object-cover", className]}
 				{...attrs}
 			/>
-			{alt && <figcaption class="px-4 py-3 text-sm leading-relaxed text-zinc-500">{alt}</figcaption>}
+			{alt && <figcaption class="px-4 pt-3 pb-2.5 text-[13px] leading-5 text-zinc-500">{alt}</figcaption>}
 		</figure>
 	)
 }

@@ -8,7 +8,7 @@ const { class: className, ...attrs } = Astro.props as Props;
 
 <p
 	class:list={[
-		"my-5 text-[20px] leading-relaxed text-pretty text-zinc-800 [&:has(img)]:my-8 [&:has(img)]:not-prose",
+		"text-base leading-7 text-pretty text-zinc-900 [&:has(img)]:my-3",
 		className,
 	]}
 	{...attrs}

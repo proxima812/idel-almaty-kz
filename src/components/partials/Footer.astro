@@ -1,99 +1,151 @@
 ---
-import BigWordBottom from "@/components/partials/BigWordBottom.astro";
-import { navigation_footer } from "@/data/navigation_footer";
-import { cn } from "@/utils/cn";
+/**
+ * Подвал по образцу heroui.com: каталог ссылок колонками (на мобильных —
+ * аккордеон), ряд соцсетей, копирайт и подпись команды.
+ */
 import { Icon } from "astro-icon/components";
-import Container from "./Container.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("posts"))
+	.filter((post) => !post.data.draft)
+	.sort((a, b) => +b.data.pubDate - +a.data.pubDate);
+
+type Link = { label: string; href: string; external?: boolean };
+
+const columns: { title: string; href: string; links: Link[] }[] = [
+	{
+		title: "Центр «Идел»",
+		href: "/",
+		links: [
+			{ label: "О нас", href: "/" },
+			{ label: "События", href: "/posts/" },
+			{ label: "Истории активистов", href: "/stories/" },
+			{ label: "Татарский | Ансамбли", href: "/events/" },
+			{ label: "Контакты", href: "/contacts/" },
+		],
+	},
+	{
+		title: "Последние события",
+		href: "/posts/",
+		links: posts.slice(0, 5).map((post) => ({ label: post.data.title, href: `/posts/${post.id}/` })),
+	},
+	{
+		title: "Присоединиться",
+		href: "/#join",
+		links: [
+			{ label: "Стать активистом", href: "/#join" },
+			{ label: "Уроки татарского", href: "https://t.me/ideltatartele", external: true },
+			{ label: "Молодежное крыло", href: "tel:+77073648032", external: true },
+			{ label: "Ансамбли", href: "/events/" },
+		],
+	},
+	{
+		title: "Связь",
+		href: "/contacts/",
+		links: [
+			{
+				label: "Instagram",
+				href: "https://www.instagram.com/idel_almaty_tatarskyi_centre/",
+				external: true,
+			},
+			{ label: "Telegram", href: "https://t.me/ideltatartele", external: true },
+			{ label: "Уалиханова, 63", href: "https://go.2gis.com/s6z84", external: true },
+			{ label: "+7 (747) 272 40 34", href: "tel:+77472724034" },
+		],
+	},
+];
+
+const socials = [
+	{ label: "Instagram", href: "https://www.instagram.com/idel_almaty_tatarskyi_centre/", icon: "mdi:instagram" },
+	{ label: "Telegram", href: "https://t.me/ideltatartele", icon: "mdi:telegram" },
+	{ label: "2ГИС", href: "https://go.2gis.com/s6z84", icon: "mdi:map-marker" },
+];
+
+const ext = (link: Link) => (link.external ? { target: "_blank", rel: "noopener noreferrer" } : {});
 ---
 
-<footer>
-	<hr
-		class="h-px w-full border-0 bg-gradient-to-r from-transparent via-gray-200 to-transparent"
-	/>
+<footer
+	class="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-5 pb-10 sm:gap-6 sm:px-6"
+>
+	<!-- Мобильные: аккордеон -->
+	<nav aria-label="Каталог сайта" class="mt-14 w-full border-t border-black/8 sm:hidden">
+		{
+			columns.map((col, i) => (
+				<details class="group border-b border-black/8" name="footer-directory" open={i === 0}>
+					<summary class="flex cursor-pointer list-none items-center justify-between py-4.5 text-[15px] leading-5 font-medium [&::-webkit-details-marker]:hidden">
+						{col.title}
+						<Icon name="mdi:chevron-down" class="text-zinc-500 transition-transform group-open:rotate-180" />
+					</summary>
+					<ul class="flex flex-col gap-3 pb-5 text-sm leading-5">
+						{col.links.map((link) => (
+							<li>
+								<a class="line-clamp-1 text-zinc-500 transition-colors hover:text-zinc-900" href={link.href} {...ext(link)}>
+									{link.label}
+								</a>
+							</li>
+						))}
+					</ul>
+				</details>
+			))
+		}
+	</nav>
 
-	<div class="py-8 bg-white">
-		<Container>
-			<div
-				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3
-					md:gap-8 gap-12 mb-16
-					/* управление колонками */
-					[&>*:nth-child(3n+1)]:lg:justify-self-start
-					[&>*:nth-child(3n+2)]:lg:justify-self-center
-					[&>*:nth-child(3n)]:lg:justify-self-end"
-			>
-				{
-					navigation_footer.map((item, index) => {
-						const columnKey = Object.keys(item).find((key) => key.startsWith("colunm"));
+	<!-- Десктоп: колонки -->
+	<nav aria-label="Каталог сайта" class="mt-24 w-full border-t border-black/8 pt-12 max-sm:hidden">
+		<ul class="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4">
+			{
+				columns.map((col) => (
+					<li class="min-w-0">
+						<a class="text-sm font-medium text-zinc-900 transition-colors hover:text-zinc-500" href={col.href}>
+							{col.title}
+						</a>
+						<ul class="mt-4 flex flex-col gap-3">
+							{col.links.map((link) => (
+								<li>
+									<a
+										class="line-clamp-1 text-sm text-zinc-500 transition-colors hover:text-zinc-900"
+										href={link.href}
+										{...ext(link)}
+									>
+										{link.label}
+									</a>
+								</li>
+							))}
+						</ul>
+					</li>
+				))
+			}
+		</ul>
+	</nav>
 
-						const baseLinks = Array.isArray(item[columnKey]) ? item[columnKey] : [];
-
-						let links = baseLinks;
-
-						// 1️⃣ Первая колонка — добавляем ссылки
-						if (index === 0) {
-              
-							links = [
-                ...baseLinks,
-                {
-                  href: "/gallery/",
-                  label: "Активисты | Галерея",
-                  icon: "mdi:view-grid",
-                },
-								{
-									href: "/contacts/",
-									label: "Контакты",
-									icon: "mdi:message-badge",
-								},
-								
-							];
-						}
-
-						// 2️⃣ Вторая колонка — ограничиваем до 6
-						if (index === 1) {
-							links = baseLinks.slice(0, 6);
-						}
-
-						return (
-							<div class="flex flex-col items-center lg:items-start">
-								<span class="mb-6 font-medium text-lg text-zinc-900">{item.category}</span>
-
-								<nav class="flex flex-col gap-4 items-center lg:items-start">
-									{links.map((link) => (
-										<a
-											href={link.href}
-											target={link.target}
-											class={cn(
-												"text-zinc-600 flex items-center gap-1 transition-colors hover:text-blue-900",
-												link.style,
-											)}
-										>
-											{link.icon && <Icon class="shrink-0" name={link.icon} />}
-											<span class="line-clamp-1">{link.label}</span>
-										</a>
-									))}
-								</nav>
-							</div>
-						);
-					})
-				}
-			</div>
-			<hr
-				class="h-px w-full border-0 bg-gradient-to-b from-transparent via-gray-200 to-transparent mb-8"
-			/>
-			<div class="flex flex-wrap items-center justify-center md:justify-between gap-3">
-				<span class="text-zinc-500 text-center">
-					&copy; {new Date().getFullYear()} Ассоциация Татарских и Татаро-Башкирских Общественных
-					и Культурных Центров <b>«ИДЕЛ»</b> по г. Алматы.
-				</span>
+	<div class="mt-10 flex items-center gap-2 max-sm:mt-6">
+		{
+			socials.map((s) => (
 				<a
-					href="https://github.com/proxima812"
+					href={s.href}
 					target="_blank"
-					title="Разработчик сайта"
-					class="flex items-center gap-1 text-slate-600 hover:text-slate-700 duration-150 ease-linear font-medium underline underline-offset-2"
-					><Icon name="mdi:github" /><span>proxima812</span></a
+					rel="noopener noreferrer"
+					aria-label={s.label}
+					class="grid size-9 place-items-center rounded-full text-xl text-zinc-500 transition-colors hover:bg-black/5 hover:text-zinc-900"
 				>
-			</div>
-		</Container>
+					<Icon name={s.icon} />
+				</a>
+			))
+		}
 	</div>
-	<BigWordBottom text="Бәхетле" className="hue" color1="from-zinc-300" color2="to-slate-200" />
+
+	<p class="text-center text-sm text-balance text-zinc-500">
+		&copy; {new Date().getFullYear()} Ассоциация татарских и татаро-башкирских общественных и
+		культурных центров «Идел» по г. Алматы.
+	</p>
+
+	<p
+		class="inline-flex items-center gap-1.5 rounded-full bg-black/5 p-1 pr-3.5 text-sm font-medium text-zinc-700"
+		title="Команда разработки сайта"
+	>
+		<span class="grid size-7 place-items-center rounded-full bg-white text-base text-zinc-900 shadow-sm">
+			<Icon name="mdi:account-group" />
+		</span>
+		Команда «Хакеры Иделя» 📳
+	</p>
 </footer>

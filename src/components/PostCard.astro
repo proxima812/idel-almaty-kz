@@ -1,0 +1,120 @@
+---
+/**
+ * Карточка события в стиле heroui.com/blog: белая подложка с отступом 4px,
+ * обложка со скруглением 20px, заголовок, описание и дата.
+ */
+import { cn } from "@/utils/cn";
+import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+
+interface Props {
+	post: CollectionEntry<"posts">;
+	size?: "lg" | "sm";
+	eager?: boolean;
+	class?: string;
+}
+
+const { post, size = "sm", eager = false, class: className } = Astro.props;
+const { title, description, pubDate, heroImage } = post.data;
+const lg = size === "lg";
+
+// Обложка-заглушка для постов без фото: цвет стабильно выбирается по id.
+const palettes = [
+	"from-amber-100 via-orange-50 to-rose-100 text-amber-900/80",
+	"from-sky-100 via-indigo-50 to-violet-100 text-indigo-900/80",
+	"from-emerald-100 via-teal-50 to-sky-100 text-emerald-900/80",
+	"from-rose-100 via-pink-50 to-fuchsia-100 text-rose-900/80",
+	"from-violet-100 via-purple-50 to-sky-100 text-violet-900/80",
+];
+const hash = [...post.id].reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+const palette = palettes[hash % palettes.length];
+
+const dateLabel = pubDate.toLocaleDateString("ru-RU", {
+	day: "numeric",
+	month: "short",
+	year: "numeric",
+});
+// «8 сентября» — родительный падеж даёт только связка день+месяц.
+const [day, month] = pubDate
+	.toLocaleDateString("ru-RU", { day: "numeric", month: "long" })
+	.split(" ");
+---
+
+<a
+	href={`/posts/${post.id}/`}
+	class={cn(
+		"group relative flex h-full flex-col rounded-3xl bg-zinc-50 p-1 ring-1 ring-zinc-900/6 transition-shadow duration-300 hover:shadow-[0_12px_32px_-12px_#0a0a0b2e]",
+		className,
+	)}
+	data-post-card
+	data-year={pubDate.getFullYear()}
+	data-search={`${title} ${description}`.toLowerCase()}
+>
+	<span
+		class={cn(
+			"relative block shrink-0 overflow-hidden rounded-[20px] bg-zinc-100",
+			lg ? "aspect-556/280" : "aspect-360/203",
+		)}
+	>
+		{
+			heroImage ? (
+				<Image
+					src={heroImage}
+					alt=""
+					width={lg ? 1112 : 720}
+					format="avif"
+					loading={eager ? "eager" : "lazy"}
+					class="absolute inset-0 size-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.02] motion-reduce:transition-none"
+				/>
+			) : (
+				<span
+					class={cn(
+						"absolute inset-0 flex flex-col justify-between bg-linear-to-br p-5 transition-transform duration-500 ease-out group-hover:scale-[1.02] motion-reduce:transition-none",
+						palette,
+					)}
+				>
+					<span class="text-xs font-semibold tracking-[0.08em] uppercase opacity-70">
+						Идел · Алматы
+					</span>
+					<span class="flex items-end gap-2 leading-none">
+						<span class={cn("font-black tracking-tight", lg ? "text-7xl" : "text-5xl")}>
+							{day}
+						</span>
+						<span class="pb-1 text-lg font-semibold">{month}</span>
+					</span>
+				</span>
+			)
+		}
+	</span>
+
+	<span class={cn("flex flex-1 flex-col", lg ? "gap-2 px-4 pt-4.5 pb-5 sm:px-5" : "gap-3 px-4 pt-4 pb-4.5")}>
+		<span
+			class={cn(
+				"line-clamp-2 font-medium text-pretty text-zinc-900",
+				lg ? "text-lg leading-6.5 sm:text-xl sm:leading-7" : "text-base leading-5.5",
+			)}
+		>
+			{title}
+		</span>
+		{
+			lg && (
+				<span class="line-clamp-2 text-[15px] leading-5.5 text-pretty text-zinc-500">
+					{description}
+				</span>
+			)
+		}
+		<span
+			class={cn(
+				"flex min-w-0 items-center gap-2",
+				lg ? "pt-1.5 text-sm leading-5" : "mt-auto text-[13px] leading-4.5",
+			)}
+		>
+			<span
+				class="grid size-5 shrink-0 place-items-center rounded-full bg-zinc-900 text-[10px] font-black text-white"
+				aria-hidden="true">И</span
+			>
+			<span class="truncate font-medium text-zinc-900">Центр «Идел»</span>
+			<time class="shrink-0 text-zinc-500" datetime={pubDate.toISOString()}>{dateLabel}</time>
+		</span>
+	</span>
+</a>

@@ -1,90 +1,289 @@
 ---
-const blocks = [
+/**
+ * Секции «О центре» в духе tatarverse.cc: текст + анимированная витрина.
+ * Витрины — чистый CSS (классы .sc-* в tailwind.css), запускаются,
+ * когда секция попадает в экран.
+ */
+import { Icon } from "astro-icon/components";
+
+const sections = [
 	{
-		title: "Что такое центр «Идел»",
-		text: "Алматинский филиал РОО «Ассоциация татарских и татаро-башкирских общественных и культурных центров «Идел».",
+		id: "osnova",
 		tag: "Основа",
 		index: "01",
-		cardClass: "bg-amber-50 border-amber-400/40",
-		tagClass: "bg-amber-100 text-amber-800 border-amber-300/60",
+		title: "Что такое центр «Идел»",
+		text: [
+			"Алматинский филиал РОО «Ассоциация татарских и татаро-башкирских общественных и культурных центров «Идел».",
+			"Головной офис Ассоциации находится в г. Астана, а в Алматы мы ведем проекты для молодежи, взрослых и семей.",
+		],
+		cta: { label: "Контакты", href: "/contacts/", icon: "mdi:message-badge" },
+		tagClass: "bg-amber-100 text-amber-800 ring-amber-300/60",
 		indexClass: "text-amber-500",
+		sceneClass: "bg-linear-to-br from-amber-50 to-orange-100/70",
 	},
 	{
-		title: "Культурные мероприятия",
-		text: "Сабантуй, тематические фестивали, конкурсы, мастер-классы и открытые встречи для молодежи и взрослых.",
+		id: "events",
 		tag: "Деятельность",
 		index: "02",
-		cardClass: "bg-rose-50 border-rose-400/40",
-		tagClass: "bg-rose-100 text-rose-800 border-rose-300/60",
+		title: "Культурные мероприятия",
+		text: [
+			"Сабантуй, тематические фестивали, конкурсы, мастер-классы и открытые встречи.",
+			"Праздники для всех желающих — от молодежи до старшего поколения.",
+		],
+		cta: { label: "События", href: "/posts/", icon: "mdi:bell-ring" },
+		tagClass: "bg-rose-100 text-rose-800 ring-rose-300/60",
 		indexClass: "text-rose-500",
+		sceneClass: "bg-linear-to-br from-rose-50 to-pink-100/70",
 	},
 	{
-		title: "Представительство и участие",
-		text: "Представляем татар и башкир на городских, республиканских и международных площадках, помогаем в адаптации и сотрудничестве.",
+		id: "represent",
 		tag: "Поддержка",
 		index: "03",
-		cardClass: "bg-sky-50 border-sky-400/40",
-		tagClass: "bg-sky-100 text-sky-800 border-sky-300/60",
+		title: "Представительство и участие",
+		text: [
+			"Представляем татар и башкир на городских, республиканских и международных площадках.",
+			"Помогаем в адаптации и сотрудничестве с другими центрами.",
+		],
+		cta: { label: "Ансамбли", href: "/events/", icon: "mdi:account-school" },
+		tagClass: "bg-sky-100 text-sky-800 ring-sky-300/60",
 		indexClass: "text-sky-500",
+		sceneClass: "bg-linear-to-br from-sky-50 to-blue-100/70",
 	},
 	{
-		title: "Главная цель",
-		text: "Создавать сильное сообщество через язык, культуру и традиции семьи, чтобы люди в центре были счастливы и развивались.",
+		id: "mission",
 		tag: "Миссия",
 		index: "04",
-		cardClass: "bg-violet-50 border-violet-400/40",
-		tagClass: "bg-violet-100 text-violet-800 border-violet-300/60",
+		title: "Главная цель",
+		text: [
+			"Сильное сообщество через язык, культуру и традиции семьи.",
+			"Чтобы люди в центре были счастливы и развивались. Приходите с идеями и с проблемами: первые воплотим, вторые решим!",
+		],
+		cta: { label: "Истории активистов", href: "/stories/", icon: "mdi:square-rounded-badge" },
+		tagClass: "bg-violet-100 text-violet-800 ring-violet-300/60",
 		indexClass: "text-violet-500",
+		sceneClass: "bg-linear-to-br from-violet-50 to-purple-100/70",
 	},
+];
+
+const events = [
+	{ emoji: "🎉", label: "Сабантуй", meta: "Июнь" },
+	{ emoji: "🏆", label: "Фестивали и конкурсы", meta: "Весь год" },
+	{ emoji: "🎓", label: "Мастер-классы", meta: "Каждый месяц" },
+	{ emoji: "💃", label: "Встречи молодежи", meta: "Выходные" },
+];
+
+const places = [
+	{ flag: "🇰🇿", city: "Алматы", note: "Наш центр", w: "92%" },
+	{ flag: "🇰🇿", city: "Астана", note: "Головной офис", w: "74%" },
+	{ flag: "🇷🇺", city: "Казань", note: "Партнеры", w: "58%" },
+	{ flag: "🇷🇺", city: "Уфа", note: "Партнеры", w: "46%" },
+];
+
+const family = [
+	{ emoji: "👵", label: "Әби" },
+	{ emoji: "👨", label: "Әти" },
+	{ emoji: "👩", label: "Әни" },
+	{ emoji: "👧", label: "Кызым" },
 ];
 ---
 
-<section class="relative mx-auto grid max-w-5xl gap-5">
-	<div
-		class="rounded-3xl border border-zinc-400/40 bg-zinc-50 p-6 md:p-9 shadow-sm shadow-zinc-300/30"
-	>
+<section class="mx-auto flex w-full max-w-5xl flex-col gap-20 md:gap-28">
+	<header class="flex flex-col items-center text-center">
 		<p
-			class="mb-3 inline-flex rounded-full border border-zinc-300/70 bg-white px-3 py-1 text-[11px] font-semibold tracking-[0.08em] text-zinc-700 uppercase"
+			class="mb-4 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-semibold tracking-[0.08em] text-zinc-700 uppercase ring-1 ring-zinc-900/10"
 		>
 			О центре
 		</p>
-		<h2 class="text-balance text-2xl font-bold tracking-tight text-zinc-900 md:text-4xl">
+		<h2 class="max-w-3xl text-4xl font-bold tracking-tight text-zinc-900 md:text-5xl">
 			Татарский центр «Идел» в Алматы
 		</h2>
-		<p class="mt-3 max-w-3xl text-pretty text-zinc-700 md:text-lg">
-			Центр объединяет татар и башкир, развивает культурные инициативы и поддерживает живую
-			связь поколений.
+		<p class="mt-4 max-w-2xl text-lg leading-8 text-zinc-600">
+			Объединяем татар и башкир, развиваем культурные инициативы и поддерживаем живую связь
+			поколений.
 		</p>
-		<p class="mt-2 max-w-3xl text-pretty text-zinc-700 md:text-lg">
-			Головной офис Ассоциации находится в г. Астана. Алматинский филиал ведет проекты для
-			молодежи, взрослых и семей.
-		</p>
-	</div>
+	</header>
 
-	<div class="flex flex-col gap-4">
-		{
-			blocks.map((block) => (
-				<article
-					class={`sticky top-20 md:top-24 rounded-3xl border p-6 md:p-9 shadow-md shadow-zinc-300/25 backdrop-blur-sm ${block.cardClass}`}
-				>
-					<div class="mb-4 flex items-center justify-between gap-3">
+	{
+		sections.map((s, i) => (
+			<section
+				aria-labelledby={`about-${s.id}`}
+				class="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-14"
+			>
+				<div class:list={["space-y-5", i % 2 === 1 && "md:order-2"]}>
+					<div class="flex items-center gap-3">
 						<span
-							class={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold tracking-[0.08em] uppercase ${block.tagClass}`}
+							class={`inline-flex rounded-full px-3 py-1 text-[11px] font-semibold tracking-[0.08em] uppercase ring-1 ${s.tagClass}`}
 						>
-							{block.tag}
+							{s.tag}
 						</span>
-						<span class={`text-2xl font-black leading-none md:text-4xl ${block.indexClass}`}>
-							{block.index}
-						</span>
+						<span class={`text-sm font-black tabular-nums ${s.indexClass}`}>{s.index}</span>
 					</div>
-					<h3 class="text-balance text-2xl font-bold leading-tight tracking-tight text-zinc-900 md:text-4xl">
-						{block.title}
-					</h3>
-					<p class="mt-3 max-w-3xl text-pretty text-zinc-700 md:text-xl md:leading-relaxed">
-						{block.text}
-					</p>
-				</article>
-			))
-		}
-	</div>
+					<h2 id={`about-${s.id}`} class="text-3xl font-bold tracking-tight md:text-4xl">
+						{s.title}
+					</h2>
+					{s.text.map((p) => (
+						<p class="leading-7 text-zinc-600 md:text-lg md:leading-8">{p}</p>
+					))}
+					<a href={s.cta.href} class="btn btn-primary btn-sm">
+						<Icon name={s.cta.icon} />
+						<span>{s.cta.label}</span>
+					</a>
+				</div>
+
+				<figure
+					data-showcase
+					data-once
+					aria-hidden="true"
+					class:list={["showcase ring-1 ring-zinc-900/5", s.sceneClass]}
+				>
+					<div class="showcase-scene" inert>
+						{s.id === "osnova" && (
+							<>
+								<div class="sc-card sc-card--hero sc-rise absolute top-[2.5em] right-[2.5em] left-[2.5em] flex flex-col gap-[0.9em] p-[1.4em]">
+									<p class="flex items-center gap-[0.4em] text-[0.8em] text-zinc-500">
+										<span>📍</span>Алматы · Казахстан
+									</p>
+									<div class="flex items-center gap-[0.75em]">
+										<span class="grid size-[2.6em] place-items-center rounded-[0.8em] bg-amber-400 text-[1.1em] font-black text-white">
+											И
+										</span>
+										<span class="text-[1.15em] font-bold text-zinc-900">Центр «Идел»</span>
+									</div>
+									<span class="flex flex-col gap-[0.45em]">
+										<span class="sc-bar sc-grow" style="width: 100%; --i: 1" />
+										<span class="sc-bar sc-grow" style="width: 78%; --i: 2" />
+										<span class="sc-bar sc-grow" style="width: 52%; --i: 3" />
+									</span>
+								</div>
+								<div
+									class="sc-card sc-pop absolute bottom-[2.5em] left-[2.5em] flex items-center gap-[0.6em] px-[1em] py-[0.7em] text-[0.85em] font-semibold"
+									style="--i: 3"
+								>
+									<span>🏛️</span>Ассоциация · Астана
+								</div>
+								<div
+									class="sc-card sc-float absolute right-[2.5em] bottom-[3.2em] grid size-[3.4em] place-items-center text-[1.4em]"
+									style="--i: 5"
+								>
+									🤝
+								</div>
+							</>
+						)}
+
+						{s.id === "events" && (
+							<div class="sc-card sc-card--hero sc-rise absolute top-[2.2em] right-[2.2em] left-[2.2em] flex flex-col gap-[0.35em] p-[1em]">
+								<p class="px-[0.5em] pb-[0.4em] text-[0.8em] font-semibold text-zinc-500">
+									Афиша центра
+								</p>
+								{events.map((e, n) => (
+									<div
+										class:list={[
+											"sc-rise flex items-center gap-[0.75em] rounded-[1em] p-[0.5em] text-[0.9em]",
+											n === 0 && "sc-press bg-rose-50",
+										]}
+										style={`--i: ${n + 1}`}
+									>
+										<span
+											class:list={[
+												"grid size-[2.2em] shrink-0 place-items-center rounded-[0.75em]",
+												n === 0 ? "bg-rose-500" : "bg-zinc-100",
+											]}
+										>
+											{e.emoji}
+										</span>
+										<span class="font-semibold text-zinc-900">{e.label}</span>
+										<span class="ml-auto text-[0.85em] text-zinc-400">{e.meta}</span>
+									</div>
+								))}
+								<span class="sc-cursor absolute top-[5.2em] right-[4em] text-[1.6em]">👆</span>
+							</div>
+						)}
+
+						{s.id === "represent" && (
+							<div class="absolute inset-[2.2em] grid grid-cols-2 gap-[0.8em]">
+								{places.map((p, n) => (
+									<div
+										class:list={[
+											"sc-card sc-pop flex flex-col justify-between gap-[0.6em] p-[1em]",
+											n === 0 && "sc-card--hero",
+										]}
+										style={`--i: ${n}`}
+									>
+										<span class="text-[1.6em] leading-none">{p.flag}</span>
+										<span>
+											<span class="block text-[1.05em] font-bold text-zinc-900">{p.city}</span>
+											<span class="block text-[0.8em] text-zinc-500">{p.note}</span>
+										</span>
+										<span class="block h-[0.45em] overflow-hidden rounded-full bg-zinc-100">
+											<span
+												class="sc-grow block h-full rounded-full bg-sky-500"
+												style={`width: ${p.w}; --i: ${n + 2}`}
+											/>
+										</span>
+									</div>
+								))}
+							</div>
+						)}
+
+						{s.id === "mission" && (
+							<>
+								<div class="sc-card sc-card--hero sc-rise absolute top-[2.4em] right-[2.4em] left-[2.4em] p-[1.3em]">
+									<p class="mb-[1em] text-[0.8em] font-semibold text-zinc-500">Гаилә · Семья</p>
+									<div class="flex items-end justify-between">
+										{family.map((f, n) => (
+											<span class="sc-pop flex flex-col items-center gap-[0.35em]" style={`--i: ${n + 1}`}>
+												<span class="grid size-[2.8em] place-items-center rounded-full bg-violet-100 text-[1.3em] ring-[0.15em] ring-white">
+													{f.emoji}
+												</span>
+												<span class="text-[0.75em] font-medium text-zinc-500">{f.label}</span>
+											</span>
+										))}
+									</div>
+								</div>
+								<div class="absolute right-[2.4em] bottom-[2.4em] left-[2.4em] grid grid-cols-3 gap-[0.6em]">
+									{["Тел · Язык", "Мәдәният", "Традиции"].map((t, n) => (
+										<span
+											class="sc-card sc-rise px-[0.6em] py-[0.7em] text-center text-[0.8em] font-semibold text-violet-700"
+											style={`--i: ${n + 5}`}
+										>
+											{t}
+										</span>
+									))}
+								</div>
+								<span
+									class="sc-float absolute top-[1.2em] right-[1.4em] text-[1.8em]"
+									style="--i: 8"
+								>
+									💜
+								</span>
+							</>
+						)}
+					</div>
+				</figure>
+			</section>
+		))
+	}
 </section>
+
+<script>
+	// Сцена играет, только пока видна; data-once — один раз и всё.
+	if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				for (const { target, isIntersecting } of entries) {
+					if (isIntersecting) {
+						target.setAttribute("data-play", "");
+						if (target.hasAttribute("data-once")) io.unobserve(target);
+					} else {
+						target.removeAttribute("data-play");
+					}
+				}
+			},
+			{ threshold: 0.45 },
+		);
+		for (const el of document.querySelectorAll("[data-showcase]:not([data-armed])")) {
+			el.setAttribute("data-armed", "");
+			io.observe(el);
+		}
+	}
+</script>
